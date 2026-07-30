@@ -11,5 +11,7 @@
              Link="RelationshipCategory.cs" />
     <Compile Include="..\Source\Domain\RelationshipClassifier.cs"
              Link="RelationshipClassifier.cs" />
+    <Compile Include="..\Source\Presentation\ScreenCollisionIndex.cs"
+             Link="ScreenCollisionIndex.cs" />
   </ItemGroup>
 </Project>

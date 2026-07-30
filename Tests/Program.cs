@@ -1,5 +1,6 @@
 using System;
 using FactionLens.Domain;
+using FactionLens.Presentation;
 
 namespace FactionLens.Tests
 {
@@ -12,8 +13,12 @@ namespace FactionLens.Tests
             ClassifiesPlayerBeforeDiplomacy();
             ClassifiesEveryDiplomaticState();
             HonorsEveryObjectTypeSwitch();
+            PreservesCollisionPlacementSemantics();
+            DetectsOverlapAcrossBucketBoundaries();
+            KeepsDenseLayoutComparisonsLocal();
             Console.WriteLine(
-                "PASS: Faction Lens pure classification contracts");
+                "PASS: Faction Lens pure classification and layout " +
+                "contracts");
             return 0;
         }
 
@@ -124,6 +129,127 @@ namespace FactionLens.Tests
                 throw new InvalidOperationException(
                     "Disabled settlement switch was ignored.");
             }
+        }
+
+        private static void PreservesCollisionPlacementSemantics()
+        {
+            var index = new ScreenCollisionIndex();
+            if (!index.TryPlace(
+                new ScreenBounds(0f, 0f, 20f, 18f),
+                out ScreenBounds first) ||
+                first.Y != 0f)
+            {
+                throw new InvalidOperationException(
+                    "The first label was not placed at its requested " +
+                    "position.");
+            }
+
+            if (!index.TryPlace(
+                new ScreenBounds(20f, 0f, 20f, 18f),
+                out ScreenBounds touching) ||
+                touching.Y != 0f)
+            {
+                throw new InvalidOperationException(
+                    "Labels whose edges only touch must not overlap.");
+            }
+
+            Equal(
+                20f,
+                PlaceAtOrigin(index),
+                "First overlap must shift down once.");
+            Equal(
+                40f,
+                PlaceAtOrigin(index),
+                "Second overlap must shift down twice.");
+            Equal(
+                60f,
+                PlaceAtOrigin(index),
+                "Third overlap must use the last allowed shift.");
+
+            if (index.TryPlace(
+                new ScreenBounds(0f, 0f, 20f, 18f),
+                out ScreenBounds rejected))
+            {
+                throw new InvalidOperationException(
+                    "A label blocked at all four tested positions must " +
+                    "be rejected, but it was placed at " +
+                    rejected.Y + ".");
+            }
+        }
+
+        private static void DetectsOverlapAcrossBucketBoundaries()
+        {
+            var index = new ScreenCollisionIndex(
+                cellSize: 32f);
+            if (!index.TryPlace(
+                new ScreenBounds(31f, 31f, 4f, 4f),
+                out ScreenBounds first) ||
+                !index.TryPlace(
+                    new ScreenBounds(34f, 34f, 4f, 4f),
+                    out ScreenBounds second))
+            {
+                throw new InvalidOperationException(
+                    "Boundary fixtures could not be placed.");
+            }
+
+            Equal(
+                40f,
+                second.Y,
+                "An overlap crossing grid cells must still shift.");
+        }
+
+        private static void KeepsDenseLayoutComparisonsLocal()
+        {
+            const int columns = 80;
+            const int rows = 40;
+            const int count = columns * rows;
+            var index = new ScreenCollisionIndex();
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int column = 0;
+                    column < columns;
+                    column++)
+                {
+                    if (!index.TryPlace(
+                        new ScreenBounds(
+                            column * 24f,
+                            row * 22f,
+                            20f,
+                            18f),
+                        out ScreenBounds placed))
+                    {
+                        throw new InvalidOperationException(
+                            "Dense non-overlapping label was rejected at " +
+                            column + "," + row + ".");
+                    }
+                }
+            }
+
+            Equal(
+                count,
+                index.Count,
+                "Dense fixture count");
+            if (index.ComparisonCount >= count * 24L)
+            {
+                throw new InvalidOperationException(
+                    "Dense layout performed too many overlap comparisons: " +
+                    index.ComparisonCount + " for " + count + " labels.");
+            }
+        }
+
+        private static float PlaceAtOrigin(
+            ScreenCollisionIndex index)
+        {
+            if (!index.TryPlace(
+                new ScreenBounds(0f, 0f, 20f, 18f),
+                out ScreenBounds placed))
+            {
+                throw new InvalidOperationException(
+                    "Expected shifted label placement to succeed.");
+            }
+
+            return placed.Y;
         }
 
         private static RelationshipCategory Classify(

@@ -30,12 +30,17 @@ status signals untouched.
 Ownership and `Faction.PlayerRelationKind` are read directly during each
 repaint. No world-tick component, relation patch, ownership patch, polling
 scan, or invalidation cache is needed. Work is absent while the world UI is
-closed and linear in the current world-object count while visible.
+closed and scales with visible objects plus nearby collision candidates while
+visible.
 
-The renderer performs no LINQ or per-object collection allocation. One reused
-rectangle list supports simple overlap avoidance. Settings-only color
-pickers and registration sorting use Spine and allocation outside the render
-hot path.
+The renderer performs no LINQ or per-object collection allocation. A reused
+64-pixel screen-space bucket index limits overlap checks to cells touched by a
+candidate label. Accepted rectangles, visit marks, dictionary storage, and
+bucket lists are retained and cleared between repaints; bucket lists are
+pooled after their high-water allocation. Placement preserves the original
+policy of trying the requested position followed by at most three
+height-plus-gap downward shifts. Settings-only color pickers and registration
+sorting use Spine and allocation outside the render hot path.
 
 ## Hidden-information rule
 
@@ -70,6 +75,10 @@ The implementation intentionally retains these private one-caller helpers:
   from control layout.
 - `WorldLabelPatch.AfterExpandableWorldObjectsOnGui` is a Harmony callback,
   so its single caller is external by design.
+- `ScreenBounds.Overlaps` and `ShiftDown`, plus
+  `ScreenCollisionIndex.Intersects`, `Add`, `BeginVisit`, and `IsValid`,
+  isolate the testable geometry, query, insertion, visit-generation, and
+  validation phases of the bucket index.
 
 Recommendation: keep these helpers private and cohesive. Inlining would mix
 responsibilities into larger UI/adapter methods, while promoting them into a

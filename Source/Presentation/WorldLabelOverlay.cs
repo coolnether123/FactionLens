@@ -11,8 +11,8 @@ namespace FactionLens.Presentation
 {
     internal static class WorldLabelOverlay
     {
-        private static readonly List<Rect> OccupiedRects =
-            new List<Rect>();
+        private static readonly ScreenCollisionIndex CollisionIndex =
+            new ScreenCollisionIndex();
         private static readonly Dictionary<string, Vector2> LabelSizes =
             new Dictionary<string, Vector2>(
                 StringComparer.Ordinal);
@@ -37,7 +37,7 @@ namespace FactionLens.Presentation
             {
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                OccupiedRects.Clear();
+                CollisionIndex.Clear();
 
                 List<WorldObject> objects =
                     Find.WorldObjects.AllWorldObjects;
@@ -72,7 +72,7 @@ namespace FactionLens.Presentation
             }
             finally
             {
-                OccupiedRects.Clear();
+                CollisionIndex.Clear();
                 Text.Font = previousFont;
                 Text.Anchor = previousAnchor;
                 GUI.color = previousColor;
@@ -140,39 +140,19 @@ namespace FactionLens.Presentation
                 return;
             }
 
-            for (int attempt = 0; attempt < 3; attempt++)
+            var candidate = new ScreenBounds(
+                labelRect.x,
+                labelRect.y,
+                labelRect.width,
+                labelRect.height);
+            if (!CollisionIndex.TryPlace(
+                candidate,
+                out ScreenBounds placed))
             {
-                bool intersects = false;
-                for (int occupiedIndex = 0;
-                    occupiedIndex < OccupiedRects.Count;
-                    occupiedIndex++)
-                {
-                    if (OccupiedRects[occupiedIndex].Overlaps(labelRect))
-                    {
-                        intersects = true;
-                        break;
-                    }
-                }
-
-                if (!intersects)
-                {
-                    break;
-                }
-
-                labelRect.y += labelRect.height + 2f;
+                return;
             }
 
-            for (int occupiedIndex = 0;
-                occupiedIndex < OccupiedRects.Count;
-                occupiedIndex++)
-            {
-                if (OccupiedRects[occupiedIndex].Overlaps(labelRect))
-                {
-                    return;
-                }
-            }
-
-            OccupiedRects.Add(labelRect);
+            labelRect.y = placed.Y;
             Color color = settings.ColorFor(category);
             color.a *= Mathf.Clamp01(transition * 2f);
             LabelDrawer.Draw(

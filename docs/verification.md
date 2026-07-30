@@ -4,21 +4,27 @@
 
 - Pure classification contracts:
   `dotnet run --project Tests\Mod.Tests.csproj -c Release`
-  completed with `PASS: Faction Lens pure classification contracts`.
+  completed with
+  `PASS: Faction Lens pure classification and layout contracts`.
+  Layout coverage includes strict edge-touching behavior, all three allowed
+  downward shifts and rejection after those shifts, cross-cell overlap, and a
+  3,200-label scaling fixture whose comparison count is bounded below
+  `label count * 24`.
 - Central build:
   `Invoke-RimWorldBuild.ps1` for RimWorld 1.6 with resolved
   `harmony,spine` dependencies completed with exit code 0. It resolved Spine
   SHA-256
   `2441959E82AA5CAC5C96E7456213B21D1FB67881E314F85F54373A4DB8C0E2AA`
-  and clean tooling commit
-  `e27edbb89f998870ea4e1383171ad45e05d115fa`.
+  and tooling commit
+  `0a17a0484c6d1c9b048647f87167b3a0b49da738`. The tooling worktree was
+  reported dirty; Faction Lens did not modify it.
 - Normal Release build completed with 0 warnings and 0 errors.
 - Package validation:
   `Test-RwtPackage -ModRoot <repo> -Version 1.6
   -ExpectedAssemblyName FactionLens` returned
   `RWT-BUILD-PACKAGE-VALID`.
-- Packaged `FactionLens.dll` is 24,576 bytes with SHA-256
-  `9163969F0E86B3C20B683E079E8D8608ED0806ED58AEF25D933B55A875CF736E`.
+- Packaged `FactionLens.dll` is 28,160 bytes with SHA-256
+  `FD1E6D0D2C8918337D4CC22D1039F7C744BD02146D311772C38A82ABC0666E1C`.
 
 ## Isolated in-game acceptance
 
@@ -83,6 +89,30 @@ Final ownership/regression lane:
   144.012 FPS, 6.944 ms/frame, no working-set/private-byte growth, and zero
   Gen0, Gen1, or Gen2 collections.
 - Log review found no exception matches.
+- The lane stopped normally with exit code 0 and no forced termination.
+
+Dense collision-index lane:
+`FactionLens-4f5d92ffd9b541b3b8bc481bd663ee4c`
+
+- Active mods were exactly Core, Harmony, RimWorld Agent, Spine, and
+  Faction Lens.
+- The lane created exactly 320 additional vanilla player settlements
+  (`Dense000` through `Dense319`); the final fixture was world-object ID 418.
+  A fully zoomed-out world-map capture,
+  `dense-world-320-20260730-214832-142.png`, shows the dense set of rendered
+  labels with collision displacement active.
+- With Faction Lens enabled, an 11.779-second probe measured 1,665 frames,
+  141.353 FPS, 7.074 ms/frame, 707 ticks, and 60.022 TPS.
+- In the identical scene with only Faction Lens's feature switch disabled,
+  an 11.352-second baseline measured 1,635 frames, 144.033 FPS,
+  6.943 ms/frame, 681 ticks, and 59.992 TPS. The feature switch was restored
+  afterward.
+- Both probes recorded no working-set or private-byte growth and zero Gen0,
+  Gen1, or Gen2 collections. Managed-memory deltas were 9,007,104 bytes
+  enabled and 8,073,216 bytes disabled.
+- Harmony inspection reconfirmed the sole relevant postfix owner as
+  `CoolNether123.FactionLens`. Log review found no exception or
+  collision-index error matches and no Faction Lens runtime errors.
 - The lane stopped normally with exit code 0 and no forced termination.
 
 Earlier category-focused captures retained in
