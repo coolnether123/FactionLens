@@ -20,5 +20,9 @@
     <li>brrainz.harmony</li>
     <li>CoolNether123.Spine</li>
   </loadAfter>
-  <description>Relationship-aware world-map labels with configurable accessible colors and readability controls.</description>
+  <description>Faction Lens makes the world map readable at a glance by adding relationship-colored names below settlements, sites, abandoned locations, and compatible modded world objects.
+
+Labels update immediately when diplomacy or ownership changes. Configure every category color, apply a colorblind-friendly palette, choose which object types participate, and optionally add a compact legend, dark nameplate, or text outline. Ownership that vanilla does not disclose remains unknown.
+
+Faction Lens changes no diplomacy mechanics or save data and never recolors vanilla icons.</description>
 </ModMetaData>

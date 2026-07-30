@@ -1,6 +1,5 @@
 using UnityEngine;
 using Verse;
-using FactionLens.Compatibility;
 using FactionLens.Patches;
 using FactionLens.Settings;
 
@@ -9,13 +8,17 @@ namespace FactionLens.Bootstrap
     public sealed class FactionLensMod : Mod
     {
         private readonly FactionLensSettings settings;
+        private readonly FactionLensSettingsUi settingsUi =
+            new FactionLensSettingsUi();
+
+        public static FactionLensSettings Settings { get; private set; }
 
         public FactionLensMod(ModContentPack content)
             : base(content)
         {
             settings = GetSettings<FactionLensSettings>();
-            CompatibilityRegistry.InitializeAll();
-            PatchInstaller.InstallAll();
+            Settings = settings;
+            WorldLabelPatch.Install();
         }
 
         public override string SettingsCategory()
@@ -25,12 +28,7 @@ namespace FactionLens.Bootstrap
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            var listing = new Listing_Standard();
-            listing.Begin(inRect);
-            listing.CheckboxLabeled(
-                "Feature enabled",
-                ref settings.FeatureEnabled);
-            listing.End();
+            settingsUi.Draw(inRect, settings);
         }
     }
 }
