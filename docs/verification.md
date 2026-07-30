@@ -77,7 +77,10 @@ Final ownership/regression lane:
   factionless, unknown, and abandoned-settlement states. The abandoned
   settlement still retained a neutral former faction.
 - `final-owned-regression` shows representative labels after the final
-  caller-ownership rebuild.
+  caller-ownership rebuild. The exact capture is
+  `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-e2ebcc807f584f8caeacdd21a90ddfee\ipc\captures\final-owned-regression-20260730-211521-314.png`
+  (SHA-256
+  `55C1F622ED3D31E8A187AB765E50D0029E39B223FDDD44094BD8C4B905B35D00`).
 - Harmony inspection found exactly one relevant patch:
   `ExpandableWorldObjectsUtility.ExpandableWorldObjectsOnGUI`, postfix
   `CoolNether123.FactionLens::FactionLens.Patches.WorldLabelPatch.AfterExpandableWorldObjectsOnGui`.
