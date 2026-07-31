@@ -138,3 +138,29 @@ Removal lane:
   without Faction Lens labels.
 - Log review found no exception matches.
 - The lane stopped normally with exit code 0 and no forced termination.
+
+## Clickable-name runtime regression
+
+Combined final lane:
+`SOS2WeaponReadouts-8000f62c5a7e4bc6ae88846fc0912f6c`
+
+- The lane loaded all four gameplay mods, Spine, SOS2, Vehicle Framework, and
+  the developer firing fixture with Development Mode enabled.
+- A neutral settlement named `Clickable_Haven` was created as world-object
+  ID 92 with `selected=False`.
+- Moving the harness pointer to the collision-adjusted rendered name changed
+  the nameplate to its hover presentation, proving the exact label rectangle
+  was the active target.
+- A real client-coordinate left click on the name changed structured state to
+  `worldObject.selected=True`. The prefix captures and consumes the exact
+  target; the postfix applies selection after vanilla input processing so
+  vanilla cannot overwrite it.
+- `faction-label-selected-final-20260731-030757-654.png` records the vanilla
+  selection brackets and settlement inspector. Its SHA-256 is
+  `5B343C5B178FC0435E3AE7CD6757E9B32A2FBA4985E86C07B8874DD9A29F2E99`.
+- The combined lane log contains zero Faction Lens failures, UI-root
+  exceptions, illegal-OnGUI errors, or Harmony failures.
+- The rebuilt shipping DLL SHA-256 is
+  `6E6523E1B7E36658BA593A2E7142537B8C1E6FA56A759F5B4C515C37A4FC8541`;
+  clean central build, the hardened selection-boundary gate, pure tests, and
+  package validation passed.
