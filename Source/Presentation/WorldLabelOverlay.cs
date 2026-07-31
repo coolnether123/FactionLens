@@ -20,22 +20,52 @@ namespace FactionLens.Presentation
         internal static void Draw()
         {
             Event currentEvent = Event.current;
-            bool repaint =
-                currentEvent.type == EventType.Repaint;
-            bool leftClick =
-                currentEvent.type == EventType.MouseDown &&
-                currentEvent.button == 0;
             FactionLensSettings settings =
                 Bootstrap.FactionLensMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
-                (!repaint && !leftClick) ||
+                currentEvent.type != EventType.Repaint ||
                 !DebugViewSettings.drawWorldObjects ||
                 Find.WorldObjects == null)
             {
                 return;
             }
 
+            Process(
+                settings,
+                repaint: true,
+                leftClick: false,
+                currentEvent.mousePosition);
+        }
+
+        internal static void HandleInput()
+        {
+            Event currentEvent = Event.current;
+            FactionLensSettings settings =
+                Bootstrap.FactionLensMod.Settings;
+            if (settings == null ||
+                !settings.FeatureEnabled ||
+                currentEvent.type != EventType.MouseDown ||
+                currentEvent.button != 0 ||
+                !DebugViewSettings.drawWorldObjects ||
+                Find.WorldObjects == null)
+            {
+                return;
+            }
+
+            Process(
+                settings,
+                repaint: false,
+                leftClick: true,
+                currentEvent.mousePosition);
+        }
+
+        private static void Process(
+            FactionLensSettings settings,
+            bool repaint,
+            bool leftClick,
+            Vector2 mousePosition)
+        {
             GameFont previousFont = Text.Font;
             TextAnchor previousAnchor = Text.Anchor;
             Color previousColor = GUI.color;
@@ -57,7 +87,7 @@ namespace FactionLens.Presentation
                             settings,
                             repaint,
                             leftClick,
-                            currentEvent.mousePosition);
+                            mousePosition);
                     }
                     catch (Exception exception)
                     {

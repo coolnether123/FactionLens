@@ -20,6 +20,9 @@ namespace FactionLens.Patches
                 return;
             }
 
+            var prefix = new HarmonyMethod(
+                typeof(WorldLabelPatch),
+                nameof(BeforeExpandableWorldObjectsOnGui));
             var postfix = new HarmonyMethod(
                 typeof(WorldLabelPatch),
                 nameof(AfterExpandableWorldObjectsOnGui));
@@ -28,6 +31,7 @@ namespace FactionLens.Patches
                 typeof(ExpandableWorldObjectsUtility),
                 nameof(ExpandableWorldObjectsUtility
                     .ExpandableWorldObjectsOnGUI),
+                prefix: prefix,
                 postfix: postfix);
             if (!success)
             {
@@ -38,6 +42,11 @@ namespace FactionLens.Patches
             }
 
             installed = true;
+        }
+
+        private static void BeforeExpandableWorldObjectsOnGui()
+        {
+            Presentation.WorldLabelOverlay.HandleInput();
         }
 
         private static void AfterExpandableWorldObjectsOnGui()

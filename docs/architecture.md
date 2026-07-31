@@ -27,8 +27,10 @@ status signals untouched.
 
 The same collision-adjusted rectangle is the label's click target. A
 left-button `MouseDown` replaces the current world selection with that exact
-object through RimWorld's `WorldSelector` and consumes the event. Drawing
-still occurs only during repaint; click processing never issues draw calls.
+object through RimWorld's `WorldSelector` and consumes the event. The input
+path runs in a non-cancelling prefix before vanilla can consume `MouseDown`;
+drawing still occurs only during the postfix repaint and click processing
+never issues draw calls.
 
 ## Immediate updates and performance
 
