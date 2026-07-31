@@ -32,6 +32,14 @@ namespace FactionLens.Presentation
                 YMax > other.Y;
         }
 
+        internal bool Contains(float x, float y)
+        {
+            return x >= X &&
+                x < XMax &&
+                y >= Y &&
+                y < YMax;
+        }
+
         internal ScreenBounds ShiftDown(float distance)
         {
             return new ScreenBounds(

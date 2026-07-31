@@ -25,6 +25,11 @@ debug visibility flag, and screen culling. Labels appear below icons, leaving
 icon material colors, selection brackets, search highlighting, and other
 status signals untouched.
 
+The same collision-adjusted rectangle is the label's click target. A
+left-button `MouseDown` replaces the current world selection with that exact
+object through RimWorld's `WorldSelector` and consumes the event. Drawing
+still occurs only during repaint; click processing never issues draw calls.
+
 ## Immediate updates and performance
 
 Ownership and `Faction.PlayerRelationKind` are read directly during each
@@ -76,6 +81,8 @@ The implementation intentionally retains these private one-caller helpers:
 - `WorldLabelPatch.AfterExpandableWorldObjectsOnGui` is a Harmony callback,
   so its single caller is external by design.
 - `ScreenBounds.Overlaps` and `ShiftDown`, plus
+  `ScreenBounds.Contains`,
+  plus
   `ScreenCollisionIndex.Intersects`, `Add`, `BeginVisit`, and `IsValid`,
   isolate the testable geometry, query, insertion, visit-generation, and
   validation phases of the bucket index.

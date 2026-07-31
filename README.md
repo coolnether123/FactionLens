@@ -8,6 +8,7 @@ colors that are resolved from current game state every repaint.
 ## Player features
 
 - Live labels for settlements, sites, and compatible faction-owned objects.
+- Click any displayed name to select that exact world-map object.
 - Separate colors for all six ownership/relationship categories.
 - An Okabe-Ito-derived colorblind preset.
 - Independent switches for settlements, sites, and other world objects.

@@ -19,11 +19,17 @@ namespace FactionLens.Presentation
 
         internal static void Draw()
         {
+            Event currentEvent = Event.current;
+            bool repaint =
+                currentEvent.type == EventType.Repaint;
+            bool leftClick =
+                currentEvent.type == EventType.MouseDown &&
+                currentEvent.button == 0;
             FactionLensSettings settings =
                 Bootstrap.FactionLensMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
-                Event.current.type != EventType.Repaint ||
+                (!repaint && !leftClick) ||
                 !DebugViewSettings.drawWorldObjects ||
                 Find.WorldObjects == null)
             {
@@ -46,7 +52,12 @@ namespace FactionLens.Presentation
                     WorldObject worldObject = objects[index];
                     try
                     {
-                        DrawObject(worldObject, settings);
+                        DrawObject(
+                            worldObject,
+                            settings,
+                            repaint,
+                            leftClick,
+                            currentEvent.mousePosition);
                     }
                     catch (Exception exception)
                     {
@@ -58,7 +69,7 @@ namespace FactionLens.Presentation
                     }
                 }
 
-                if (settings.ShowLegend)
+                if (repaint && settings.ShowLegend)
                 {
                     DrawLegend(settings);
                 }
@@ -81,7 +92,10 @@ namespace FactionLens.Presentation
 
         private static void DrawObject(
             WorldObject worldObject,
-            FactionLensSettings settings)
+            FactionLensSettings settings,
+            bool repaint,
+            bool leftClick,
+            Vector2 mousePosition)
         {
             if (worldObject == null ||
                 worldObject.Destroyed ||
@@ -153,13 +167,29 @@ namespace FactionLens.Presentation
             }
 
             labelRect.y = placed.Y;
-            Color color = settings.ColorFor(category);
-            color.a *= Mathf.Clamp01(transition * 2f);
-            LabelDrawer.Draw(
-                labelRect,
-                label,
-                color,
-                settings);
+            bool mouseOver = placed.Contains(
+                mousePosition.x,
+                mousePosition.y);
+            if (repaint)
+            {
+                Color color = settings.ColorFor(category);
+                color.a *= Mathf.Clamp01(transition * 2f);
+                LabelDrawer.Draw(
+                    labelRect,
+                    label,
+                    color,
+                    settings,
+                    mouseOver);
+            }
+
+            if (leftClick && mouseOver)
+            {
+                Find.WorldSelector.ClearSelection();
+                Find.WorldSelector.Select(
+                    worldObject,
+                    playSound: true);
+                Event.current.Use();
+            }
         }
 
         private static void DrawLegend(FactionLensSettings settings)

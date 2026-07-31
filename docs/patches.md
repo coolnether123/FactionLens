@@ -6,7 +6,7 @@
 - Installer: `Spine.Harmony.HarmonyHelper.TryPatchMethod`
 - Harmony owner: `CoolNether123.FactionLens`
 - Purpose: draw additive world-object labels immediately after vanilla draws
-  expanded icons.
+  expanded icons and make each displayed name an exact selection target.
 - Safety: the original method always runs; no arguments, return values, fields,
   icon materials, or IL are changed.
 - Failure behavior: installation logs one clear error and leaves the vanilla

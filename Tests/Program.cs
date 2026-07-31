@@ -16,6 +16,7 @@ namespace FactionLens.Tests
             PreservesCollisionPlacementSemantics();
             DetectsOverlapAcrossBucketBoundaries();
             KeepsDenseLayoutComparisonsLocal();
+            LabelBoundsUseExactClickTarget();
             Console.WriteLine(
                 "PASS: Faction Lens pure classification and layout " +
                 "contracts");
@@ -235,6 +236,29 @@ namespace FactionLens.Tests
                 throw new InvalidOperationException(
                     "Dense layout performed too many overlap comparisons: " +
                     index.ComparisonCount + " for " + count + " labels.");
+            }
+        }
+
+        private static void LabelBoundsUseExactClickTarget()
+        {
+            var bounds = new ScreenBounds(
+                10f,
+                20f,
+                30f,
+                18f);
+            if (!bounds.Contains(10f, 20f) ||
+                !bounds.Contains(39.99f, 37.99f))
+            {
+                throw new InvalidOperationException(
+                    "Visible label pixels must be selectable.");
+            }
+
+            if (bounds.Contains(9.99f, 20f) ||
+                bounds.Contains(40f, 20f) ||
+                bounds.Contains(10f, 38f))
+            {
+                throw new InvalidOperationException(
+                    "Clicks outside the label must not select it.");
             }
         }
 

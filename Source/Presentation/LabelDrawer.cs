@@ -23,7 +23,8 @@ namespace FactionLens.Presentation
             Rect rect,
             string label,
             Color color,
-            FactionLensSettings settings)
+            FactionLensSettings settings,
+            bool hovered = false)
         {
             Color previousColor = GUI.color;
 
@@ -32,6 +33,10 @@ namespace FactionLens.Presentation
                 Color background = BackgroundColor;
                 background.a *= color.a;
                 Widgets.DrawBoxSolid(rect, background);
+            }
+            if (hovered)
+            {
+                Widgets.DrawHighlight(rect);
             }
 
             Rect textRect = rect.ContractedBy(4f, 1f);
