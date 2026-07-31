@@ -34,6 +34,15 @@ if ($overlay -notmatch
         'Label clicks must replace selection through WorldSelector.')
 }
 if ($overlay -notmatch
+    'pendingSelection\s*=\s*worldObject' -or
+    $overlay -notmatch
+    'ApplyPendingSelection\(\);\s*\r?\n\s*\r?\n\s*Event currentEvent')
+{
+    $failures.Add(
+        'The prefix must capture the click and the postfix must apply ' +
+        'selection after vanilla input handling.')
+}
+if ($overlay -notmatch
     'Event\.current\.Use\(\)')
 {
     $failures.Add(
@@ -50,5 +59,5 @@ if ($failures.Count -gt 0)
 }
 
 Write-Output (
-    'PASS: world-object nameplates select through a non-cancelling ' +
-    'pre-vanilla input path.')
+    'PASS: world-object nameplates capture clicks before vanilla and ' +
+    'apply exact selection afterward.')

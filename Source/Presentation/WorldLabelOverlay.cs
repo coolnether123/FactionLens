@@ -16,9 +16,12 @@ namespace FactionLens.Presentation
         private static readonly Dictionary<string, Vector2> LabelSizes =
             new Dictionary<string, Vector2>(
                 StringComparer.Ordinal);
+        private static WorldObject pendingSelection;
 
         internal static void Draw()
         {
+            ApplyPendingSelection();
+
             Event currentEvent = Event.current;
             FactionLensSettings settings =
                 Bootstrap.FactionLensMod.Settings;
@@ -214,12 +217,24 @@ namespace FactionLens.Presentation
 
             if (leftClick && mouseOver)
             {
-                Find.WorldSelector.ClearSelection();
-                Find.WorldSelector.Select(
-                    worldObject,
-                    playSound: true);
+                pendingSelection = worldObject;
                 Event.current.Use();
             }
+        }
+
+        private static void ApplyPendingSelection()
+        {
+            WorldObject worldObject = pendingSelection;
+            pendingSelection = null;
+            if (worldObject == null || worldObject.Destroyed)
+            {
+                return;
+            }
+
+            Find.WorldSelector.ClearSelection();
+            Find.WorldSelector.Select(
+                worldObject,
+                playSound: true);
         }
 
         private static void DrawLegend(FactionLensSettings settings)

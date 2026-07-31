@@ -27,10 +27,12 @@ status signals untouched.
 
 The same collision-adjusted rectangle is the label's click target. A
 left-button `MouseDown` replaces the current world selection with that exact
-object through RimWorld's `WorldSelector` and consumes the event. The input
-path runs in a non-cancelling prefix before vanilla can consume `MouseDown`;
-drawing still occurs only during the postfix repaint and click processing
-never issues draw calls.
+object through RimWorld's `WorldSelector` and consumes the event. A
+non-cancelling prefix captures the target before vanilla can consume
+`MouseDown`; the postfix applies the captured selection after vanilla has
+finished its own input handling, so vanilla cannot overwrite the label click.
+Drawing still occurs only during postfix repaint and click processing never
+issues draw calls.
 
 ## Immediate updates and performance
 
@@ -76,8 +78,9 @@ The implementation intentionally retains these private one-caller helpers:
 - `OwnershipService.Classify`, `IsVanillaOwnershipMeaningful`, and `KindOf`
   separate compatibility results, vanilla applicability, and UI type policy
   from the main adapter flow.
-- `WorldLabelOverlay.DrawObject` and `DrawLegend` separate per-object and
-  panel rendering from GUI-state lifetime management.
+- `WorldLabelOverlay.DrawObject`, `ApplyPendingSelection`, and `DrawLegend`
+  separate per-object rendering, post-vanilla selection, and panel rendering
+  from GUI-state lifetime management.
 - `FactionLensSettingsUi.DrawPreview` separates the reusable label preview
   from control layout.
 - `WorldLabelPatch.AfterExpandableWorldObjectsOnGui` is a Harmony callback,
