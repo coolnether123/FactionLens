@@ -2,6 +2,7 @@ using UnityEngine;
 using Verse;
 using FactionLens.Patches;
 using FactionLens.Settings;
+using Spine.Api;
 
 namespace FactionLens.Bootstrap
 {
@@ -16,6 +17,12 @@ namespace FactionLens.Bootstrap
         public FactionLensMod(ModContentPack content)
             : base(content)
         {
+            SpineApi.Runtime.Require(new SpineRequirement(
+                "CoolNether123.FactionLens",
+                new SemanticVersion(1, 0, 0),
+                SpineCapability.Settings |
+                SpineCapability.HarmonyPatching));
+
             settings = GetSettings<FactionLensSettings>();
             Settings = settings;
             WorldLabelPatch.Install();
