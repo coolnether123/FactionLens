@@ -4,6 +4,7 @@ using FactionLens.Domain;
 using FactionLens.Ownership;
 using FactionLens.Settings;
 using RimWorld.Planet;
+using Spine.UI.ContextualSettings;
 using UnityEngine;
 using Verse;
 
@@ -77,6 +78,18 @@ namespace FactionLens.Presentation
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 CollisionIndex.Clear();
+
+                if (settings.ShowLegend &&
+                    Bootstrap.FactionLensMod.ContextualSettings?.Bind(
+                        LegendPanelRect(),
+                        ContextualSettingsTarget.Exact(
+                            "visuals.legend",
+                            "visuals.header"),
+                        ContextualSettingsBindingOptions.HintOnly(
+                            priority: 5)) == true)
+                {
+                    return;
+                }
 
                 List<WorldObject> objects =
                     Find.WorldObjects.AllWorldObjects;
@@ -203,6 +216,37 @@ namespace FactionLens.Presentation
             bool mouseOver = placed.Contains(
                 mousePosition.x,
                 mousePosition.y);
+            string objectSettingId;
+            switch (kind)
+            {
+                case WorldObjectKind.Settlement:
+                    objectSettingId = "objects.settlements";
+                    break;
+                case WorldObjectKind.Site:
+                    objectSettingId = "objects.sites";
+                    break;
+                default:
+                    objectSettingId = "objects.other";
+                    break;
+            }
+
+            if (Bootstrap.FactionLensMod.ContextualSettings?.Bind(
+                labelRect,
+                ContextualSettingsTarget.Exact(
+                    objectSettingId,
+                    "objects.header"),
+                ContextualSettingsBindingOptions.HintOnly(
+                    priority: 5)) == true)
+            {
+                return;
+            }
+
+            Bootstrap.FactionLensMod.ContextualSettings?.Bind(
+                labelRect.ContractedBy(4f, 1f),
+                ContextualSettingsTarget.Exact(
+                    ColorSettingId(category),
+                    "colors.header"),
+                new ContextualSettingsBindingOptions(priority: 10));
             if (repaint)
             {
                 Color color = settings.ColorFor(category);
@@ -249,10 +293,8 @@ namespace FactionLens.Presentation
                 RelationshipCategory.Unknown
             };
 
-            const float width = 154f;
             const float rowHeight = 20f;
-            float height = 26f + categories.Length * rowHeight + 6f;
-            Rect panel = new Rect(12f, 72f, width, height);
+            Rect panel = LegendPanelRect();
             Widgets.DrawBoxSolid(
                 panel,
                 new Color(0.035f, 0.035f, 0.035f, 0.86f));
@@ -273,6 +315,17 @@ namespace FactionLens.Presentation
             {
                 RelationshipCategory category = categories[index];
                 float y = panel.y + 27f + index * rowHeight;
+                Rect row = new Rect(
+                    panel.x + 5f,
+                    y,
+                    panel.width - 10f,
+                    rowHeight);
+                Bootstrap.FactionLensMod.ContextualSettings?.Bind(
+                    row,
+                    ContextualSettingsTarget.Exact(
+                        ColorSettingId(category),
+                        "colors.header"),
+                    new ContextualSettingsBindingOptions(priority: 10));
                 Widgets.DrawBoxSolid(
                     new Rect(panel.x + 9f, y + 4f, 12f, 12f),
                     settings.ColorFor(category));
@@ -287,6 +340,38 @@ namespace FactionLens.Presentation
             }
 
             Text.Anchor = previousAnchor;
+        }
+
+        private static Rect LegendPanelRect()
+        {
+            const float width = 154f;
+            const float rowHeight = 20f;
+            const int categoryCount = 6;
+            return new Rect(
+                12f,
+                72f,
+                width,
+                26f + categoryCount * rowHeight + 6f);
+        }
+
+        private static string ColorSettingId(
+            RelationshipCategory category)
+        {
+            switch (category)
+            {
+                case RelationshipCategory.Hostile:
+                    return "colors.hostile";
+                case RelationshipCategory.Neutral:
+                    return "colors.neutral";
+                case RelationshipCategory.Allied:
+                    return "colors.allied";
+                case RelationshipCategory.Player:
+                    return "colors.player";
+                case RelationshipCategory.Factionless:
+                    return "colors.factionless";
+                default:
+                    return "colors.unknown";
+            }
         }
     }
 }

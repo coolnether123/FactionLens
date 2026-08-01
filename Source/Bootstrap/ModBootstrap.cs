@@ -3,6 +3,7 @@ using Verse;
 using FactionLens.Patches;
 using FactionLens.Settings;
 using Spine.Api;
+using Spine.UI.ContextualSettings;
 
 namespace FactionLens.Bootstrap
 {
@@ -11,6 +12,7 @@ namespace FactionLens.Bootstrap
         private readonly FactionLensSettings settings;
         private readonly FactionLensSettingsUi settingsUi =
             new FactionLensSettingsUi();
+        private static IContextualSettingsLease contextualSettingsLease;
 
         public static FactionLensSettings Settings { get; private set; }
 
@@ -19,14 +21,26 @@ namespace FactionLens.Bootstrap
         {
             SpineApi.Runtime.Require(new SpineRequirement(
                 "CoolNether123.FactionLens",
-                new SemanticVersion(1, 0, 0),
+                new SemanticVersion(1, 1, 0),
                 SpineCapability.Settings |
-                SpineCapability.HarmonyPatching));
+                SpineCapability.HarmonyPatching |
+                SpineCapability.ContextualSettings));
 
             settings = GetSettings<FactionLensSettings>();
             Settings = settings;
+            if (contextualSettingsLease == null)
+            {
+                contextualSettingsLease = SpineApi.ContextualSettings.Acquire(
+                    "CoolNether123.FactionLens",
+                    this,
+                    settingsUi.Drawer,
+                    settings);
+            }
             WorldLabelPatch.Install();
         }
+
+        internal static IContextualSettingsLease ContextualSettings =>
+            contextualSettingsLease;
 
         public override string SettingsCategory()
         {
