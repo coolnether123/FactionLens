@@ -14,7 +14,7 @@ namespace FactionLens.Settings
                 AdvancedLabel = "Advanced",
                 NoResultsLabel = "No settings match",
                 ResetToDefaultLabel = "Reset to default",
-                EditColorLabel = "FactionLens_Settings_Edit".Translate(),
+                EditColorLabel = "Edit",
                 GetLabel = definition => TranslateOrFallback(
                     definition.LabelKey,
                     definition.Label),
@@ -29,6 +29,7 @@ namespace FactionLens.Settings
 
         internal void Draw(Rect inRect, FactionLensSettings settings)
         {
+            drawer.EditColorLabel = "FactionLens_Settings_Edit".Translate();
             drawer.Draw(inRect, settings, ref viewMode, settings.Write);
         }
 
