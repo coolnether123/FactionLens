@@ -104,6 +104,10 @@ namespace FactionLens.Presentation
                             repaint,
                             leftClick,
                             mousePosition);
+                        if (Event.current.type == EventType.Used)
+                        {
+                            return;
+                        }
                     }
                     catch (Exception exception)
                     {

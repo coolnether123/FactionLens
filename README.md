@@ -16,6 +16,10 @@ colors that are resolved from current game state every repaint.
 - An immediate settings preview and one-click reset.
 - No game-save component and no diplomacy changes.
 
+Alt-click a label, its relationship-colored text, or the legend to open and
+highlight the narrowest presentation setting. Alt-click never selects the
+world object, and routing uses only the already disclosed relationship class.
+
 Labels follow vanilla world-map zoom and visibility rules. The mod adds a
 name below an object's icon; it does not alter the icon, terrain, planet, or
 any vanilla status color.
