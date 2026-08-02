@@ -4,7 +4,7 @@
 
 - Kind: non-cancelling prefix for label-click capture plus postfix for
   post-vanilla selection and repaint
-- Installer: `Spine.Harmony.HarmonyHelper.TryPatchMethod`
+- Installer: `SpineApi.Patching.TryPatch`
 - Harmony owner: `CoolNether123.FactionLens`
 - Purpose: draw additive world-object labels immediately after vanilla draws
   expanded icons and make each displayed name an exact selection target.

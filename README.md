@@ -20,9 +20,11 @@ Alt-click a label, its relationship-colored text, or the legend to open and
 highlight the narrowest presentation setting. Alt-click never selects the
 world object, and routing uses only the already disclosed relationship class.
 
-Labels follow vanilla world-map zoom and visibility rules. The mod adds a
-name below an object's icon; it does not alter the icon, terrain, planet, or
-any vanilla status color.
+Labels follow vanilla world-map zoom and visibility rules. The mod adds a name
+below an object's icon; it does not alter the icon, terrain, planet, or any
+vanilla status color. A subtle white connector appears when collision
+avoidance has to move a label away from its icon; labels in their normal
+position remain unchanged.
 
 ## Requirements
 
@@ -33,8 +35,7 @@ any vanilla status color.
 ## Installation
 
 Spine does not yet have a public Workshop or download URL, so this verified
-build is distributed in the local collection at
-`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final`. Copy both
+build is distributed through the locally produced release collection. Copy both
 `FactionLens` and `Spine` into RimWorld's `Mods` directory, then enable
 Harmony, Spine, and Faction Lens in that order. No other gameplay mod in the
 collection is required.
@@ -45,7 +46,7 @@ collection is required.
 dotnet run --project Tests\Mod.Tests.csproj -c Release
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command `
-  "& 'A:\Dev\RimWorld\Worktrees\RimWorld-Tooling\phase-a\tools\Invoke-RimWorldBuild.ps1' `
+  "& (Join-Path `$env:RIMWORLD_TOOLING_ROOT 'tools\Invoke-RimWorldBuild.ps1') `
   -Project '$PWD\Source\Mod.csproj' -Configuration Release -Version 1.6 `
   -OutputRoot '$PWD\Engineering\artifacts\build' -Engine DotNet `
   -Dependency @('harmony','spine')"

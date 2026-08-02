@@ -1,4 +1,5 @@
 using FactionLens.Domain;
+using Spine.Api;
 using UnityEngine;
 using Verse;
 
@@ -69,59 +70,9 @@ namespace FactionLens.Settings
 
         public override void ExposeData()
         {
-            FactionLensPalette defaults = FactionLensPalette.Default;
-            Scribe_Values.Look(
-                ref FeatureEnabled,
-                "featureEnabled",
-                true);
-            Scribe_Values.Look(
-                ref ShowSettlements,
-                "showSettlements",
-                true);
-            Scribe_Values.Look(
-                ref ShowSites,
-                "showSites",
-                true);
-            Scribe_Values.Look(
-                ref ShowOtherFactionObjects,
-                "showOtherFactionObjects",
-                true);
-            Scribe_Values.Look(
-                ref ShowLegend,
-                "showLegend",
-                false);
-            Scribe_Values.Look(
-                ref ShowBackground,
-                "showBackground",
-                true);
-            Scribe_Values.Look(
-                ref ShowOutline,
-                "showOutline",
-                false);
-            Scribe_Values.Look(
-                ref HostileColor,
-                "hostileColor",
-                defaults.Hostile);
-            Scribe_Values.Look(
-                ref NeutralColor,
-                "neutralColor",
-                defaults.Neutral);
-            Scribe_Values.Look(
-                ref AlliedColor,
-                "alliedColor",
-                defaults.Allied);
-            Scribe_Values.Look(
-                ref PlayerColor,
-                "playerColor",
-                defaults.Player);
-            Scribe_Values.Look(
-                ref FactionlessColor,
-                "factionlessColor",
-                defaults.Factionless);
-            Scribe_Values.Look(
-                ref UnknownColor,
-                "unknownColor",
-                defaults.Unknown);
+            SpineApi.Settings.Scribe(
+                this,
+                FactionLensSettingsRegistry.Definitions);
             base.ExposeData();
         }
 

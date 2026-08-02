@@ -23,7 +23,12 @@ replace, transpile, or reproduce the vanilla method.
 The overlay uses `TransitionPct`, `HiddenBehindTerrainNow`, the world-object
 debug visibility flag, and screen culling. Labels appear below icons, leaving
 icon material colors, selection brackets, search highlighting, and other
-status signals untouched.
+status signals untouched. A label placed at its natural position keeps the
+normal unconnected appearance. When collision avoidance shifts it downward,
+the overlay draws a thin white connector from the icon to the displaced label.
+Rendering is deliberately two-pass: every connector is drawn first, followed
+by every nameplate and its text. A connector therefore remains behind all
+labels regardless of world-object enumeration order.
 
 The same collision-adjusted rectangle is the label's click target. A
 left-button `MouseDown` replaces the current world selection with that exact
@@ -50,6 +55,10 @@ pooled after their high-water allocation. Placement preserves the original
 policy of trying the requested position followed by at most three
 height-plus-gap downward shifts. Settings-only color pickers and registration
 sorting use Spine and allocation outside the render hot path.
+
+Measured label sizes use Spine's bounded LRU cache instead of an unbounded or
+magic-threshold dictionary clear. The cache has a 64 KiB budget and therefore
+retains useful repeated names without periodic full-cache churn.
 
 ## Hidden-information rule
 
@@ -78,9 +87,10 @@ The implementation intentionally retains these private one-caller helpers:
 - `OwnershipService.Classify`, `IsVanillaOwnershipMeaningful`, and `KindOf`
   separate compatibility results, vanilla applicability, and UI type policy
   from the main adapter flow.
-- `WorldLabelOverlay.DrawObject`, `ApplyPendingSelection`, and `DrawLegend`
-  separate per-object rendering, post-vanilla selection, and panel rendering
-  from GUI-state lifetime management.
+- `WorldLabelOverlay.TryPlaceObject`, `BindAndHandleInput`, `DrawConnector`,
+  `DrawPlacedLabel`, `ApplyPendingSelection`, and `DrawLegend` separate layout,
+  input, the connector-first pass, the label-second pass, post-vanilla
+  selection, and panel rendering from GUI-state lifetime management.
 - `FactionLensSettingsUi.DrawPreview` separates the reusable label preview
   from control layout.
 - `WorldLabelPatch.AfterExpandableWorldObjectsOnGui` is a Harmony callback,

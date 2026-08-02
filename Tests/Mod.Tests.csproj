@@ -5,6 +5,7 @@
     <AssemblyName>FactionLens.Tests</AssemblyName>
     <RootNamespace>FactionLens.Tests</RootNamespace>
     <Deterministic>true</Deterministic>
+    <RwtTestSupportProject Condition="'$(RwtTestSupportProject)' == ''">$(MSBuildThisFileDirectory)..\..\..\Worktrees\RimWorld-Tooling\phase-a\test-support\RimWorld.ModTestSupport\RimWorld.ModTestSupport.csproj</RwtTestSupportProject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Source\Domain\RelationshipCategory.cs"
@@ -13,5 +14,8 @@
              Link="RelationshipClassifier.cs" />
     <Compile Include="..\Source\Presentation\ScreenCollisionIndex.cs"
              Link="ScreenCollisionIndex.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(RwtTestSupportProject)" />
   </ItemGroup>
 </Project>

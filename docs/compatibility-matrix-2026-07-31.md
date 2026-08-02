@@ -5,7 +5,7 @@ runtime, Harmony, RimWorld Agent, and Spine where Faction Lens was active. Full
 evidence and exact identities are in
 `docs/compatibility-investigation-2026-07-31.md`. Runtime lane paths below are
 children of the exact root
-`C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6`.
+`<harness-evidence-root>`.
 
 | Combination | Orders tested | Classification | Evidence / remaining boundary |
 |---|---:|---|---|

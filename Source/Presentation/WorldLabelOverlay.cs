@@ -4,6 +4,7 @@ using FactionLens.Domain;
 using FactionLens.Ownership;
 using FactionLens.Settings;
 using RimWorld.Planet;
+using Spine.Caching;
 using Spine.UI.ContextualSettings;
 using UnityEngine;
 using Verse;
@@ -14,9 +15,21 @@ namespace FactionLens.Presentation
     {
         private static readonly ScreenCollisionIndex CollisionIndex =
             new ScreenCollisionIndex();
-        private static readonly Dictionary<string, Vector2> LabelSizes =
-            new Dictionary<string, Vector2>(
+        private static readonly BoundedLruCache<string, Vector2> LabelSizes =
+            new BoundedLruCache<string, Vector2>(
+                64 * 1024,
                 StringComparer.Ordinal);
+        private static readonly RelationshipCategory[] LegendCategories =
+        {
+            RelationshipCategory.Player,
+            RelationshipCategory.Allied,
+            RelationshipCategory.Neutral,
+            RelationshipCategory.Hostile,
+            RelationshipCategory.Factionless,
+            RelationshipCategory.Unknown
+        };
+        private static readonly List<PlacedLabel> PlacedLabels =
+            new List<PlacedLabel>();
         private static WorldObject pendingSelection;
 
         internal static void Draw()
@@ -78,6 +91,7 @@ namespace FactionLens.Presentation
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 CollisionIndex.Clear();
+                PlacedLabels.Clear();
 
                 if (settings.ShowLegend &&
                     Bootstrap.FactionLensMod.ContextualSettings?.Bind(
@@ -98,24 +112,78 @@ namespace FactionLens.Presentation
                     WorldObject worldObject = objects[index];
                     try
                     {
-                        DrawObject(
+                        if (TryPlaceObject(
                             worldObject,
                             settings,
-                            repaint,
+                            out PlacedLabel placedLabel))
+                        {
+                            PlacedLabels.Add(placedLabel);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        LogSkippedObject(worldObject, exception);
+                    }
+                }
+
+                for (int index = 0; index < PlacedLabels.Count; index++)
+                {
+                    PlacedLabel placedLabel = PlacedLabels[index];
+                    try
+                    {
+                        if (BindAndHandleInput(
+                            placedLabel,
                             leftClick,
-                            mousePosition);
-                        if (Event.current.type == EventType.Used)
+                            mousePosition))
                         {
                             return;
                         }
                     }
                     catch (Exception exception)
                     {
-                        int objectId = worldObject?.ID ?? -1;
-                        Log.ErrorOnce(
-                            "[Faction Lens] Skipped a world object whose " +
-                            "label could not be resolved: " + exception,
-                            201607400 ^ objectId);
+                        LogSkippedObject(
+                            placedLabel.WorldObject,
+                            exception);
+                    }
+                }
+
+                if (repaint)
+                {
+                    for (int index = 0;
+                        index < PlacedLabels.Count;
+                        index++)
+                    {
+                        PlacedLabel placedLabel = PlacedLabels[index];
+                        try
+                        {
+                            DrawConnector(placedLabel);
+                        }
+                        catch (Exception exception)
+                        {
+                            LogSkippedObject(
+                                placedLabel.WorldObject,
+                                exception);
+                        }
+                    }
+
+                    for (int index = 0;
+                        index < PlacedLabels.Count;
+                        index++)
+                    {
+                        PlacedLabel placedLabel = PlacedLabels[index];
+                        try
+                        {
+                            DrawPlacedLabel(
+                                placedLabel,
+                                settings,
+                                mousePosition);
+                        }
+                        catch (Exception exception)
+                        {
+                            LogSkippedObject(
+                                placedLabel.WorldObject,
+                                exception);
+                        }
                     }
                 }
 
@@ -134,32 +202,32 @@ namespace FactionLens.Presentation
             finally
             {
                 CollisionIndex.Clear();
+                PlacedLabels.Clear();
                 Text.Font = previousFont;
                 Text.Anchor = previousAnchor;
                 GUI.color = previousColor;
             }
         }
 
-        private static void DrawObject(
+        private static bool TryPlaceObject(
             WorldObject worldObject,
             FactionLensSettings settings,
-            bool repaint,
-            bool leftClick,
-            Vector2 mousePosition)
+            out PlacedLabel placedLabel)
         {
+            placedLabel = default;
             if (worldObject == null ||
                 worldObject.Destroyed ||
                 worldObject.def == null ||
                 worldObject.HiddenBehindTerrainNow())
             {
-                return;
+                return false;
             }
 
             float transition =
                 ExpandableWorldObjectsUtility.TransitionPct(worldObject);
             if (transition <= 0.08f)
             {
-                return;
+                return false;
             }
 
             if (!OwnershipService.TryClassify(
@@ -168,24 +236,22 @@ namespace FactionLens.Presentation
                 out WorldObjectKind kind) ||
                 !settings.IsKindEnabled(kind))
             {
-                return;
+                return false;
             }
 
             string label = worldObject.LabelCap;
             if (label.NullOrEmpty())
             {
-                return;
+                return false;
             }
 
-            if (!LabelSizes.TryGetValue(label, out Vector2 size))
+            if (!LabelSizes.TryGet(label, out Vector2 size))
             {
-                if (LabelSizes.Count >= 512)
-                {
-                    LabelSizes.Clear();
-                }
-
                 size = LabelDrawer.Measure(label);
-                LabelSizes[label] = size;
+                LabelSizes.AddOrUpdate(
+                    label,
+                    size,
+                    Math.Max(16, label.Length * sizeof(char) + 16));
             }
             Rect iconRect =
                 ExpandableWorldObjectsUtility.ExpandedIconScreenRect(
@@ -201,7 +267,7 @@ namespace FactionLens.Presentation
                 labelRect.yMax < 0f ||
                 labelRect.y > UI.screenHeight)
             {
-                return;
+                return false;
             }
 
             var candidate = new ScreenBounds(
@@ -213,15 +279,33 @@ namespace FactionLens.Presentation
                 candidate,
                 out ScreenBounds placed))
             {
-                return;
+                return false;
             }
 
             labelRect.y = placed.Y;
-            bool mouseOver = placed.Contains(
-                mousePosition.x,
-                mousePosition.y);
+            placedLabel = new PlacedLabel(
+                worldObject,
+                category,
+                kind,
+                label,
+                transition,
+                iconRect,
+                new Rect(
+                    candidate.X,
+                    candidate.Y,
+                    candidate.Width,
+                    candidate.Height),
+                labelRect);
+            return true;
+        }
+
+        private static bool BindAndHandleInput(
+            PlacedLabel placedLabel,
+            bool leftClick,
+            Vector2 mousePosition)
+        {
             string objectSettingId;
-            switch (kind)
+            switch (placedLabel.Kind)
             {
                 case WorldObjectKind.Settlement:
                     objectSettingId = "objects.settlements";
@@ -235,39 +319,80 @@ namespace FactionLens.Presentation
             }
 
             if (Bootstrap.FactionLensMod.ContextualSettings?.Bind(
-                labelRect,
+                placedLabel.LabelRect,
                 ContextualSettingsTarget.Exact(
                     objectSettingId,
                     "objects.header"),
                 ContextualSettingsBindingOptions.HintOnly(
                     priority: 5)) == true)
             {
-                return;
+                return true;
             }
 
             Bootstrap.FactionLensMod.ContextualSettings?.Bind(
-                labelRect.ContractedBy(4f, 1f),
+                placedLabel.LabelRect.ContractedBy(4f, 1f),
                 ContextualSettingsTarget.Exact(
-                    ColorSettingId(category),
+                    ColorSettingId(placedLabel.Category),
                     "colors.header"),
                 new ContextualSettingsBindingOptions(priority: 10));
-            if (repaint)
+            if (leftClick && placedLabel.LabelRect.Contains(mousePosition))
             {
-                Color color = settings.ColorFor(category);
-                color.a *= Mathf.Clamp01(transition * 2f);
-                LabelDrawer.Draw(
-                    labelRect,
-                    label,
-                    color,
-                    settings,
-                    mouseOver);
-            }
-
-            if (leftClick && mouseOver)
-            {
+                WorldObject worldObject = placedLabel.WorldObject;
                 pendingSelection = worldObject;
                 Event.current.Use();
+                return true;
             }
+
+            return false;
+        }
+
+        private static void DrawConnector(PlacedLabel placedLabel)
+        {
+            if (Mathf.Abs(
+                placedLabel.LabelRect.y -
+                placedLabel.NaturalLabelRect.y) <= 0.5f)
+            {
+                return;
+            }
+
+            Color connectorColor = Color.white;
+            connectorColor.a = 0.72f *
+                Mathf.Clamp01(placedLabel.Transition * 2f);
+            Widgets.DrawLine(
+                new Vector2(
+                    placedLabel.IconRect.center.x,
+                    placedLabel.IconRect.yMax),
+                new Vector2(
+                    placedLabel.LabelRect.center.x,
+                    placedLabel.LabelRect.yMin),
+                connectorColor,
+                1f);
+        }
+
+        private static void DrawPlacedLabel(
+            PlacedLabel placedLabel,
+            FactionLensSettings settings,
+            Vector2 mousePosition)
+        {
+            Color color = settings.ColorFor(placedLabel.Category);
+            color.a *= Mathf.Clamp01(placedLabel.Transition * 2f);
+            LabelDrawer.Draw(
+                placedLabel.LabelRect,
+                placedLabel.Label,
+                color,
+                settings,
+                placedLabel.LabelRect.Contains(mousePosition));
+        }
+
+        private static void LogSkippedObject(
+            WorldObject worldObject,
+            Exception exception)
+        {
+            int objectId = worldObject?.ID ?? -1;
+            Log.ErrorOnce(
+                "[Faction Lens] Skipped a world object whose " +
+                "label could not be resolved: " + exception,
+                201607400 ^ objectId);
         }
 
         private static void ApplyPendingSelection()
@@ -287,16 +412,6 @@ namespace FactionLens.Presentation
 
         private static void DrawLegend(FactionLensSettings settings)
         {
-            RelationshipCategory[] categories =
-            {
-                RelationshipCategory.Player,
-                RelationshipCategory.Allied,
-                RelationshipCategory.Neutral,
-                RelationshipCategory.Hostile,
-                RelationshipCategory.Factionless,
-                RelationshipCategory.Unknown
-            };
-
             const float rowHeight = 20f;
             Rect panel = LegendPanelRect();
             Widgets.DrawBoxSolid(
@@ -315,9 +430,9 @@ namespace FactionLens.Presentation
                     22f),
                 "FactionLens_Legend_Title".Translate());
 
-            for (int index = 0; index < categories.Length; index++)
+            for (int index = 0; index < LegendCategories.Length; index++)
             {
-                RelationshipCategory category = categories[index];
+                RelationshipCategory category = LegendCategories[index];
                 float y = panel.y + 27f + index * rowHeight;
                 Rect row = new Rect(
                     panel.x + 5f,
@@ -340,7 +455,7 @@ namespace FactionLens.Presentation
                         y,
                         panel.width - 34f,
                         rowHeight),
-                    FactionLensSettingsUi.CategoryLabel(category));
+                    FactionLensSettingsRegistry.CategoryLabel(category));
             }
 
             Text.Anchor = previousAnchor;
@@ -376,6 +491,38 @@ namespace FactionLens.Presentation
                 default:
                     return "colors.unknown";
             }
+        }
+
+        private readonly struct PlacedLabel
+        {
+            internal PlacedLabel(
+                WorldObject worldObject,
+                RelationshipCategory category,
+                WorldObjectKind kind,
+                string label,
+                float transition,
+                Rect iconRect,
+                Rect naturalLabelRect,
+                Rect labelRect)
+            {
+                WorldObject = worldObject;
+                Category = category;
+                Kind = kind;
+                Label = label;
+                Transition = transition;
+                IconRect = iconRect;
+                NaturalLabelRect = naturalLabelRect;
+                LabelRect = labelRect;
+            }
+
+            internal WorldObject WorldObject { get; }
+            internal RelationshipCategory Category { get; }
+            internal WorldObjectKind Kind { get; }
+            internal string Label { get; }
+            internal float Transition { get; }
+            internal Rect IconRect { get; }
+            internal Rect NaturalLabelRect { get; }
+            internal Rect LabelRect { get; }
         }
     }
 }

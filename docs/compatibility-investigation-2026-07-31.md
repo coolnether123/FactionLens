@@ -3,7 +3,7 @@
 ## Scope and decision rule
 
 This is an evidence-only Core pairwise pass. It used the canonical DRM-free
-runtime at `H:\Games\RimWorld1-6-4871Win64` (`1.6.4871 rev573`) and did not
+runtime at `<rimworld-install>` (`1.6.4871 rev573`) and did not
 start an individual full-DLC Steam lane. Steam Workshop folders were read-only
 mod inputs. The grouped DLC assertions at the end are the remaining DLC lane;
 unrelated DLC combinations are deliberately out of scope.
@@ -30,7 +30,7 @@ No compatibility code and no external-mod files were changed.
 | Vanilla Outposts Expanded | `vanillaexpanded.outposts` | Workshop item `2688941031`, manifest `8980092163706155411`; no `modVersion` in `About.xml`; 1.6 DLL SHA-256 `5898527AB8F820F0FDE5145CFAF197D7FC473714A610AF1EB0FAD17AD46D74F6` | Steam `timetouched` 2026-07-31 19:50:53 -05:00 (folder creation 2026-05-21) | Steam `timeupdated` 2026-05-25 04:35:19 -05:00 | RW 1.6.4871, Core only |
 
 The Steam manifest evidence is
-`D:\Steam Library\steamapps\workshop\appworkshop_294100.acf`. Dates above are
+`<steam-library>\steamapps\workshop\appworkshop_294100.acf`. Dates above are
 the manifest's Unix timestamps converted to America/Chicago. This is more exact
 than treating copied folder timestamps as a release version.
 
@@ -52,9 +52,9 @@ world objects.
 
 Primary evidence:
 
-- `A:\Dev\RimWorld\Mods\FactionLens\docs\verification.md`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-4f5d92ffd9b541b3b8bc481bd663ee4c`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\Spine-9d99af6907e641ff95d1c971f2323316`
+- `<repo-root>\docs\verification.md`
+- `<harness-evidence-root>\FactionLens-4f5d92ffd9b541b3b8bc481bd663ee4c`
+- `<harness-evidence-root>\Spine-9d99af6907e641ff95d1c971f2323316`
 
 ### Rim War alone — external baseline confirmed
 
@@ -66,8 +66,8 @@ matches were present.
 
 Evidence:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2222935097-a21d1f7327434dacbd4730e501fbf3eb\lane.json`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2222935097-a21d1f7327434dacbd4730e501fbf3eb\ipc\captures\rimwar-alone-baseline-20260801-012236-342.png`
+- `<harness-evidence-root>\2222935097-a21d1f7327434dacbd4730e501fbf3eb\lane.json`
+- `<harness-evidence-root>\2222935097-a21d1f7327434dacbd4730e501fbf3eb\ipc\captures\rimwar-alone-baseline-20260801-012236-342.png`
 
 ### Faction Lens + Rim War, target first — compatible
 
@@ -96,10 +96,10 @@ regression signal, but it is not a dense Rim War stress benchmark.
 
 Evidence:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-fc49f39f242748b2aa19411c74e4df94\lane.json`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-labels-valid-20260801-011918-104.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-live-relation-selection-20260801-011944-800.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-roundtrip-valid-20260801-012339-799.png`
+- `<harness-evidence-root>\FactionLens-fc49f39f242748b2aa19411c74e4df94\lane.json`
+- `<harness-evidence-root>\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-labels-valid-20260801-011918-104.png`
+- `<harness-evidence-root>\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-live-relation-selection-20260801-011944-800.png`
+- `<harness-evidence-root>\FactionLens-fc49f39f242748b2aa19411c74e4df94\ipc\captures\rimwar-pair-roundtrip-valid-20260801-012339-799.png`
 
 ### Rim War + Faction Lens, external first — compatible
 
@@ -113,8 +113,8 @@ surface.
 
 Evidence:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2222935097-1c5cfb8c363a4b70be4e9e90d3422756\lane.json`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2222935097-1c5cfb8c363a4b70be4e9e90d3422756\ipc\captures\rimwar-first-pair-20260801-012218-003.png`
+- `<harness-evidence-root>\2222935097-1c5cfb8c363a4b70be4e9e90d3422756\lane.json`
+- `<harness-evidence-root>\2222935097-1c5cfb8c363a4b70be4e9e90d3422756\ipc\captures\rimwar-first-pair-20260801-012218-003.png`
 
 ### Faction Lens + VEF + Vanilla Outposts Expanded, both orders — inconclusive
 
@@ -140,10 +140,10 @@ ownership, and shared Harmony ownership are compatible in both orders.
 
 Evidence:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-7af9b45e5dc04fdab436d7b16e99af48\lane.json`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-7af9b45e5dc04fdab436d7b16e99af48\ipc\captures\factionlens-first-voe-pair-20260801-012704-795.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2023507013-dff7bb86835740de918a649879a59041\lane.json`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\2023507013-dff7bb86835740de918a649879a59041\ipc\captures\voe-first-pair-20260801-012632-984.png`
+- `<harness-evidence-root>\FactionLens-7af9b45e5dc04fdab436d7b16e99af48\lane.json`
+- `<harness-evidence-root>\FactionLens-7af9b45e5dc04fdab436d7b16e99af48\ipc\captures\factionlens-first-voe-pair-20260801-012704-795.png`
+- `<harness-evidence-root>\2023507013-dff7bb86835740de918a649879a59041\lane.json`
+- `<harness-evidence-root>\2023507013-dff7bb86835740de918a649879a59041\ipc\captures\voe-first-pair-20260801-012632-984.png`
 
 ## Findings and smallest defensible response
 

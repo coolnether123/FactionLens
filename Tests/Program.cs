@@ -1,6 +1,7 @@
 using System;
 using FactionLens.Domain;
 using FactionLens.Presentation;
+using static RimWorld.ModTestSupport.Test;
 
 namespace FactionLens.Tests
 {
@@ -8,19 +9,17 @@ namespace FactionLens.Tests
     {
         private static int Main()
         {
-            ClassifiesUndisclosedOwnershipAsUnknown();
-            ClassifiesFactionlessBeforeRelationship();
-            ClassifiesPlayerBeforeDiplomacy();
-            ClassifiesEveryDiplomaticState();
-            HonorsEveryObjectTypeSwitch();
-            PreservesCollisionPlacementSemantics();
-            DetectsOverlapAcrossBucketBoundaries();
-            KeepsDenseLayoutComparisonsLocal();
-            LabelBoundsUseExactClickTarget();
-            Console.WriteLine(
-                "PASS: Faction Lens pure classification and layout " +
-                "contracts");
-            return 0;
+            Start("Faction Lens contracts");
+            Run("undisclosed ownership stays unknown", ClassifiesUndisclosedOwnershipAsUnknown);
+            Run("factionless precedes relationship", ClassifiesFactionlessBeforeRelationship);
+            Run("player precedes diplomacy", ClassifiesPlayerBeforeDiplomacy);
+            Run("all diplomatic states classify", ClassifiesEveryDiplomaticState);
+            Run("object switches are honored", HonorsEveryObjectTypeSwitch);
+            Run("collision placement semantics", PreservesCollisionPlacementSemantics);
+            Run("bucket-boundary overlap", DetectsOverlapAcrossBucketBoundaries);
+            Run("dense comparisons stay local", KeepsDenseLayoutComparisonsLocal);
+            Run("label bounds are exact", LabelBoundsUseExactClickTarget);
+            return Finish();
         }
 
         private static void ClassifiesUndisclosedOwnershipAsUnknown()
@@ -286,17 +285,5 @@ namespace FactionLens.Tests
                 relation);
         }
 
-        private static void Equal<T>(
-            T expected,
-            T actual,
-            string contract)
-        {
-            if (!Equals(expected, actual))
-            {
-                throw new InvalidOperationException(
-                    contract + " Expected " + expected +
-                    ", received " + actual + ".");
-            }
-        }
     }
 }

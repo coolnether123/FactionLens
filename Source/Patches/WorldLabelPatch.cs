@@ -1,7 +1,6 @@
 using HarmonyLib;
 using RimWorld.Planet;
-using Spine.Harmony;
-using Verse;
+using Spine.Api;
 
 namespace FactionLens.Patches
 {
@@ -9,39 +8,25 @@ namespace FactionLens.Patches
     {
         internal const string HarmonyId =
             "CoolNether123.FactionLens";
-        private static readonly HarmonyLib.Harmony HarmonyInstance =
-            new HarmonyLib.Harmony(HarmonyId);
-        private static bool installed;
+        private static readonly Spine.Harmony.IHarmonyPatchInstaller Installer =
+            SpineApi.Patching.CreateInstaller(HarmonyId, "[Faction Lens]");
 
         internal static void Install()
         {
-            if (installed)
-            {
-                return;
-            }
-
             var prefix = new HarmonyMethod(
                 typeof(WorldLabelPatch),
                 nameof(BeforeExpandableWorldObjectsOnGui));
             var postfix = new HarmonyMethod(
                 typeof(WorldLabelPatch),
                 nameof(AfterExpandableWorldObjectsOnGui));
-            bool success = HarmonyHelper.TryPatchMethod(
-                HarmonyInstance,
-                typeof(ExpandableWorldObjectsUtility),
-                nameof(ExpandableWorldObjectsUtility
-                    .ExpandableWorldObjectsOnGUI),
+            Installer.TryPatch(
+                "world-label overlay",
+                AccessTools.Method(
+                    typeof(ExpandableWorldObjectsUtility),
+                    nameof(ExpandableWorldObjectsUtility
+                        .ExpandableWorldObjectsOnGUI)),
                 prefix: prefix,
                 postfix: postfix);
-            if (!success)
-            {
-                Log.Error(
-                    "[Faction Lens] Could not install the world-label " +
-                    "postfix. Vanilla world-map rendering is unchanged.");
-                return;
-            }
-
-            installed = true;
         }
 
         private static void BeforeExpandableWorldObjectsOnGui()

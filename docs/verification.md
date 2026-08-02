@@ -78,7 +78,7 @@ Final ownership/regression lane:
   settlement still retained a neutral former faction.
 - `final-owned-regression` shows representative labels after the final
   caller-ownership rebuild. The exact capture is
-  `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\FactionLens-e2ebcc807f584f8caeacdd21a90ddfee\ipc\captures\final-owned-regression-20260730-211521-314.png`
+  `<harness-evidence-root>\FactionLens-e2ebcc807f584f8caeacdd21a90ddfee\ipc\captures\final-owned-regression-20260730-211521-314.png`
   (SHA-256
   `55C1F622ED3D31E8A187AB765E50D0029E39B223FDDD44094BD8C4B905B35D00`).
 - Harmony inspection found exactly one relevant patch:
@@ -164,3 +164,60 @@ Combined final lane:
   `6E6523E1B7E36658BA593A2E7142537B8C1E6FA56A759F5B4C515C37A4FC8541`;
   clean central build, the hardened selection-boundary gate, pure tests, and
   package validation passed.
+
+## Displaced-label connector follow-up (2026-08-01)
+
+Collision-displaced labels now receive a thin white connector from the
+world-object icon to the moved nameplate. Labels accepted at their natural
+position remain unchanged. Rendering uses two explicit passes: all connectors
+are drawn first, followed by all nameplates and text, so a connector cannot
+paint over another label even when that label was processed earlier.
+
+The pure classification/layout suite and the existing hardened clickable-name
+boundary gate both pass unchanged. The new connector render-order boundary
+gate also passes and protects both requirements: connector calls precede label
+calls, and connectors are limited to moved labels. The centralized Release
+build completed with zero warnings and zero errors. Package validation returned
+`RWT-BUILD-PACKAGE-VALID`. The shipping DLL is 33,280 bytes with SHA-256
+`3A914C4729991C6979D1BB65C3CFC5287E864B293AF330B18FA5B0F1FC378395`.
+
+Live verification used isolated session
+`eight-new-7283e74c70d54261bd8e2054d0a8fa45`, all eight gameplay mods, Spine,
+Ideology, Biotech, SOS2, and Vehicle Framework. A copied `Autosave-1` loaded
+normally and paused at completion generation 1. The world map was centered on
+Xosro Oasis (world-object ID 52), the same crowded region represented in the
+reported screenshot. Natural-position labels retained their prior appearance,
+and Faction Lens retained exactly two Harmony patches.
+
+The attempted direct zoom input was stopped from the keyboard, so no further
+Windows input was issued and the collision-distance visual capture was not
+repeated. The harness stopped normally with exit code 0 and no forced
+termination. No Faction Lens, UI-root, illegal-OnGUI, or Harmony exception was
+logged. Vehicle Framework emitted its known dedicated-thread abort only after
+the harness requested shutdown; it is external to the label renderer.
+
+## Release-candidate connector proof — 2026-08-02
+
+The final centralized build completed with zero warnings and zero errors.
+`Test-RwtPackage` returned `RWT-BUILD-PACKAGE-VALID`. The production folder
+contains one 30,208-byte `FactionLens.dll`, SHA-256
+`45BFE7B31692B7CEEE194F30447312A3CF684049DA3FCC1FA335024932B0E485`.
+
+Developer-only fixture `FactionLens.TestFixture`, explicitly added to isolated
+lane `coolnether-suite-447da1d8caad46629f489b9168c5e229`, created ten adjacent
+settlements around the player settlement. Their long labels forced collision
+displacement. The capture shows a clear connector from each displaced label
+back to its settlement icon, while connectors remain behind every black
+nameplate and label text. Ordinary-density capture in the preceding lane
+confirmed natural-position labels remain unconnected.
+
+Capture:
+`<harness-evidence-root>\coolnether-suite-447da1d8caad46629f489b9168c5e229\ipc\captures\faction-lens-rc-displaced-connectors-20260802-230543-123.png`
+
+Capture SHA-256:
+`8B5F4AE278AE1C5ABDBB3FB98CA7B5ACB177BA217079475E837231106CCD81F2`.
+
+Fixture cleanup removed all ten temporary settlements. The final pre-shutdown
+scan found no matching in-game or Player.log error, and the harness stopped
+normally with exit code 0 and no forced termination. The developer fixture is
+not included in the release package.

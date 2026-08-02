@@ -1,55 +1,27 @@
-using UnityEngine;
 using Verse;
 using FactionLens.Patches;
 using FactionLens.Settings;
 using Spine.Api;
-using Spine.UI.ContextualSettings;
+using Spine.UI.SettingsFramework;
 
 namespace FactionLens.Bootstrap
 {
-    public sealed class FactionLensMod : Mod
+    public sealed class FactionLensMod : SpineMod<FactionLensSettings>
     {
-        private readonly FactionLensSettings settings;
-        private readonly FactionLensSettingsUi settingsUi =
-            new FactionLensSettingsUi();
-        private static IContextualSettingsLease contextualSettingsLease;
-
-        public static FactionLensSettings Settings { get; private set; }
-
         public FactionLensMod(ModContentPack content)
-            : base(content)
-        {
-            SpineApi.Runtime.Require(new SpineRequirement(
+            : base(
+                content,
                 "CoolNether123.FactionLens",
-                new SemanticVersion(1, 1, 0),
-                SpineCapability.Settings |
+                new SemanticVersion(1, 0, 0),
+                FactionLensSettingsRegistry.Definitions,
                 SpineCapability.HarmonyPatching |
-                SpineCapability.ContextualSettings));
-
-            settings = GetSettings<FactionLensSettings>();
-            Settings = settings;
-            if (contextualSettingsLease == null)
-            {
-                contextualSettingsLease = SpineApi.ContextualSettings.Acquire(
-                    "CoolNether123.FactionLens",
-                    this,
-                    settingsUi.Drawer,
-                    settings);
-            }
+                SpineCapability.BoundedCaches,
+                new ModSettingsPageOptions { RowHeight = 38f })
+        {
             WorldLabelPatch.Install();
         }
 
-        internal static IContextualSettingsLease ContextualSettings =>
-            contextualSettingsLease;
-
-        public override string SettingsCategory()
-        {
-            return "Faction Lens";
-        }
-
-        public override void DoSettingsWindowContents(Rect inRect)
-        {
-            settingsUi.Draw(inRect, settings);
-        }
+        protected override string SettingsCategoryLabel =>
+            "Faction Lens";
     }
 }
