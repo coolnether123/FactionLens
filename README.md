@@ -23,8 +23,9 @@ world object, and routing uses only the already disclosed relationship class.
 Labels follow vanilla world-map zoom and visibility rules. The mod adds a name
 below an object's icon; it does not alter the icon, terrain, planet, or any
 vanilla status color. A subtle white connector appears when collision
-avoidance has to move a label away from its icon; labels in their normal
-position remain unchanged.
+avoidance has to move a label away from its icon. Connector lines are drawn
+behind nameplates, so they keep the settlement relationship clear without
+crossing neighboring names. Labels in their normal position remain unchanged.
 
 ## Requirements
 

@@ -26,7 +26,7 @@
   </loadAfter>
   <description>Faction Lens makes the world map readable at a glance by adding relationship-colored names below settlements, sites, abandoned locations, and compatible modded world objects.
 
-Labels update immediately when diplomacy or ownership changes. Configure every category color, apply a colorblind-friendly palette, choose which object types participate, and optionally add a compact legend, dark nameplate, or text outline. Ownership that vanilla does not disclose remains unknown.
+Click a displayed name to select its world object. Labels update immediately when diplomacy or ownership changes. Configure every category color, apply a colorblind-friendly palette, choose which objects participate, and optionally add a compact legend, dark nameplate, or text outline. When collision avoidance moves a label, a subtle connector is drawn behind the nameplates so its settlement remains clear. Ownership that vanilla does not disclose remains unknown.
 
 Faction Lens changes no diplomacy mechanics or save data and never recolors vanilla icons.</description>
 </ModMetaData>

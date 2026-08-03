@@ -221,3 +221,10 @@ Fixture cleanup removed all ten temporary settlements. The final pre-shutdown
 scan found no matching in-game or Player.log error, and the harness stopped
 normally with exit code 0 and no forced termination. The developer fixture is
 not included in the release package.
+## Final release-candidate gate — 2026-08-03
+
+Passed 9 contracts (13 assertions), connector render-order, label-selection,
+clean build, and package checks. Live world-map verification selected the
+settlement named by a clicked label, kept connector lines behind nameplates,
+and did not disclose an unknown site's owner. No Faction Lens exception was
+recorded in the all-suite or compatibility save/reload runs.
