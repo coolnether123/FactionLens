@@ -34,17 +34,19 @@ namespace FactionLens.Settings
                 SettingDefinitions.Toggle("visuals.outline", nameof(FactionLensSettings.ShowOutline),
                     "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline"),
                 SettingDefinitions.Toggle("visuals.displaced", nameof(FactionLensSettings.ShowDisplacedLabels),
-                    "Show displaced labels", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", scribeKey: "showDisplacedLabels"),
+                    "Keep labels that cannot fit under their icon", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", simple: false, scribeKey: "showDisplacedLabels"),
+                SettingDefinitions.Toggle("visuals.playerpriority", nameof(FactionLensSettings.PrioritizePlayerLabels),
+                    "Give player colony names first claim", "FactionLens_Settings_PlayerPriority", tooltipKey: "FactionLens_Settings_PlayerPriority_Tip", simple: false, scribeKey: "prioritizePlayerLabels"),
                 SettingDefinitions.Toggle("visuals.legend", nameof(FactionLensSettings.ShowLegend),
-                    "Show legend", "FactionLens_Settings_Legend", scribeKey: "showLegend"),
+                    "Show legend", "FactionLens_Settings_Legend", tooltipKey: "FactionLens_Settings_Legend_Tip", scribeKey: "showLegend"),
 
                 SettingDefinitions.Header("objects.header", "Object types", "FactionLens_Settings_ObjectTypes"),
                 SettingDefinitions.Toggle("objects.settlements", nameof(FactionLensSettings.ShowSettlements),
-                    "Show settlements", "FactionLens_Settings_Settlements", scribeKey: "showSettlements"),
+                    "Show settlements", "FactionLens_Settings_Settlements", tooltipKey: "FactionLens_Settings_Settlements_Tip", scribeKey: "showSettlements"),
                 SettingDefinitions.Toggle("objects.sites", nameof(FactionLensSettings.ShowSites),
-                    "Show sites", "FactionLens_Settings_Sites", scribeKey: "showSites"),
+                    "Show sites", "FactionLens_Settings_Sites", tooltipKey: "FactionLens_Settings_Sites_Tip", scribeKey: "showSites"),
                 SettingDefinitions.Toggle("objects.other", nameof(FactionLensSettings.ShowOtherFactionObjects),
-                    "Show other faction objects", "FactionLens_Settings_Other", tooltipKey: "FactionLens_Settings_Other_Tip", scribeKey: "showOtherFactionObjects"),
+                    "Show other faction objects", "FactionLens_Settings_Other", tooltipKey: "FactionLens_Settings_Other_Tip", simple: false, scribeKey: "showOtherFactionObjects"),
 
                 SettingDefinitions.Header("colors.header", "Relationship colors", "FactionLens_Settings_Colors"),
                 ColorSetting("colors.hostile", nameof(FactionLensSettings.HostileColor), "hostileColor", RelationshipCategory.Hostile),
@@ -58,9 +60,19 @@ namespace FactionLens.Settings
                     "FactionLens_Settings_Colorblind", "FactionLens_Settings_Colorblind_Tip"),
                 SettingDefinitions.Button("colors.reset", "Reset all",
                     value => ((FactionLensSettings)value).ApplyDefaults(),
-                    "FactionLens_Settings_Reset"),
-                SettingDefinitions.Header("preview.header", "Preview", "FactionLens_Settings_Preview"),
-                SettingDefinitions.Custom("preview.labels", DrawPreview)
+                    "FactionLens_Settings_Reset", tooltipKey: "FactionLens_Settings_Reset_Tip", simple: false),
+                // Pinned so the swatches stay on screen while the colour rows
+                // above them scroll; changing a colour is pointless if you have
+                // to scroll away from the preview to reach the control.
+                SettingDefinitions.Header(
+                    "preview.header",
+                    "Preview",
+                    "FactionLens_Settings_Preview",
+                    SettingPin.Bottom),
+                SettingDefinitions.Custom(
+                    "preview.labels",
+                    DrawPreview,
+                    pin: SettingPin.Bottom)
             };
         }
 
