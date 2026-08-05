@@ -35,8 +35,8 @@ namespace FactionLens.Settings
                 // it changes nothing a player can see. Hide the control while the
                 // background is on rather than offer a setting that does nothing.
                 SettingDefinitions.Toggle("visuals.outline", nameof(FactionLensSettings.ShowOutline),
-                    "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline",
-                    visibleWhen: settings => !((FactionLensSettings)settings).ShowBackground),
+                    "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline")
+                    .ShownWhen(settings => !((FactionLensSettings)settings).ShowBackground),
                 SettingDefinitions.Toggle("visuals.displaced", nameof(FactionLensSettings.ShowDisplacedLabels),
                     "Keep labels that cannot fit under their icon", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", simple: false, scribeKey: "showDisplacedLabels"),
                 SettingDefinitions.Toggle("visuals.hoveronly", nameof(FactionLensSettings.LabelsOnHoverOnly),
@@ -66,14 +66,13 @@ namespace FactionLens.Settings
                     "FactionLens_Settings_Colorblind", "FactionLens_Settings_Colorblind_Tip"),
                 SettingDefinitions.Button("colors.reset", "Reset all",
                     value => ((FactionLensSettings)value).ApplyDefaults(),
-                    "FactionLens_Settings_Reset", tooltipKey: "FactionLens_Settings_Reset_Tip", simple: false),
+                    "FactionLens_Settings_Reset", tooltipKey: "FactionLens_Settings_Reset_Tip")
+                    .AdvancedOnly(),
                 // Pinned so the swatches stay on screen while the colour rows
                 // above them scroll; changing a colour is pointless if you have
                 // to scroll away from the preview to reach the control.
-                SettingDefinitions.Custom(
-                    "preview.labels",
-                    DrawPreview,
-                    pin: SettingPin.Bottom)
+                SettingDefinitions.Custom("preview.labels", DrawPreview)
+                    .Pinned(SettingPin.Bottom)
             };
         }
 
