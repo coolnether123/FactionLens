@@ -27,9 +27,7 @@
   <FactionLens_Settings_Colorblind_Tip>Use an Okabe-Ito-derived palette with distinct luminance and hue.</FactionLens_Settings_Colorblind_Tip>
   <FactionLens_Settings_Reset>Reset all defaults</FactionLens_Settings_Reset>
   <FactionLens_Settings_Reset_Tip>Restores every Faction Lens setting, including all six relationship colours, to its default.</FactionLens_Settings_Reset_Tip>
-  <FactionLens_Settings_Preview>Immediate preview</FactionLens_Settings_Preview>
   <FactionLens_Settings_Color_Tip>Changes preview here immediately and apply to an open world map without reloading.</FactionLens_Settings_Color_Tip>
-  <FactionLens_Settings_Edit>Edit</FactionLens_Settings_Edit>
   <FactionLens_Category_Hostile>Hostile</FactionLens_Category_Hostile>
   <FactionLens_Category_Neutral>Neutral</FactionLens_Category_Neutral>
   <FactionLens_Category_Allied>Allied</FactionLens_Category_Allied>
