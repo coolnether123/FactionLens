@@ -15,6 +15,7 @@ namespace FactionLens.Settings
         public bool ShowBackground = true;
         public bool ShowOutline;
         public bool ShowDisplacedLabels;
+        public bool PrioritizePlayerLabels = true;
 
         public Color HostileColor = FactionLensPalette.Default.Hostile;
         public Color NeutralColor = FactionLensPalette.Default.Neutral;
@@ -62,6 +63,7 @@ namespace FactionLens.Settings
             ShowBackground = true;
             ShowOutline = false;
             ShowDisplacedLabels = false;
+            PrioritizePlayerLabels = true;
             ApplyPalette(FactionLensPalette.Default);
         }
 

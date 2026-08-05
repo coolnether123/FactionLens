@@ -30,6 +30,21 @@ namespace FactionLens.Presentation
         };
         private static readonly List<PlacedLabel> PlacedLabels =
             new List<PlacedLabel>();
+        private static readonly List<PendingLabel> Candidates =
+            new List<PendingLabel>();
+        // World-object IDs whose label survived the previous placement pass.
+        // Used to give a showing label first claim on its slot so the set of
+        // visible names stays stable while the camera moves.
+        private static readonly HashSet<int> PreviouslyPlaced =
+            new HashSet<int>();
+        // Guards against a candidate being committed twice when the priority
+        // passes overlap, which they deliberately do.
+        private static readonly HashSet<int> CommittedIds =
+            new HashSet<int>();
+        // The world object whose label the pointer was over on the previous
+        // repaint, or -1. Carried across passes so a hovered name keeps its
+        // place while the player zooms out under it.
+        private static int hoveredWorldObjectId = -1;
         private static WorldObject pendingSelection;
 
         internal static void Draw()
@@ -96,6 +111,8 @@ namespace FactionLens.Presentation
                         ? ScreenCollisionIndex.DefaultVerticalShifts
                         : 0;
                 PlacedLabels.Clear();
+                Candidates.Clear();
+                CommittedIds.Clear();
 
                 if (settings.ShowLegend &&
                     Bootstrap.FactionLensMod.ContextualSettings?.Bind(
@@ -116,12 +133,12 @@ namespace FactionLens.Presentation
                     WorldObject worldObject = objects[index];
                     try
                     {
-                        if (TryPlaceObject(
+                        if (TryPrepareObject(
                             worldObject,
                             settings,
-                            out PlacedLabel placedLabel))
+                            out PendingLabel pending))
                         {
-                            PlacedLabels.Add(placedLabel);
+                            Candidates.Add(pending);
                         }
                     }
                     catch (Exception exception)
@@ -129,6 +146,40 @@ namespace FactionLens.Presentation
                         LogSkippedObject(worldObject, exception);
                     }
                 }
+
+                // Placement order decides who wins a contested slot, so it is
+                // ordered deliberately on two axes.
+                //
+                // Stability first: a label that was showing last pass claims its
+                // slot before any newcomer. Without that, a small camera movement
+                // can flip which of two competing names wins and the map flickers
+                // as names swap in and out. A showing name now keeps its place
+                // until it genuinely no longer fits.
+                //
+                // Player colonies first within that: enumeration order is
+                // otherwise arbitrary, and with several colonies late game the
+                // name is the only thing telling them apart.
+                // Above every other rule: whatever the pointer is resting on
+                // keeps its place. The player has explicitly indicated which
+                // name they care about, so culling it out from under them while
+                // they zoom is the one case where dropping a label is plainly
+                // wrong rather than merely unlucky.
+                CommitHoveredCandidate();
+
+                if (settings.PrioritizePlayerLabels)
+                {
+                    CommitCandidates(playerOnly: true, returning: true);
+                    CommitCandidates(playerOnly: true, returning: false);
+                    CommitCandidates(playerOnly: false, returning: true);
+                    CommitCandidates(playerOnly: false, returning: false);
+                }
+                else
+                {
+                    CommitCandidates(playerOnly: null, returning: true);
+                    CommitCandidates(playerOnly: null, returning: false);
+                }
+
+                RememberPlacedLabels();
 
                 for (int index = 0; index < PlacedLabels.Count; index++)
                 {
@@ -170,6 +221,7 @@ namespace FactionLens.Presentation
                         }
                     }
 
+                    hoveredWorldObjectId = -1;
                     for (int index = 0;
                         index < PlacedLabels.Count;
                         index++)
@@ -207,18 +259,163 @@ namespace FactionLens.Presentation
             {
                 CollisionIndex.Clear();
                 PlacedLabels.Clear();
+                Candidates.Clear();
+                CommittedIds.Clear();
                 Text.Font = previousFont;
                 Text.Anchor = previousAnchor;
                 GUI.color = previousColor;
             }
         }
 
-        private static bool TryPlaceObject(
-            WorldObject worldObject,
-            FactionLensSettings settings,
+        /// <summary>
+        /// Commits the label the pointer was resting on, before any other
+        /// candidate can take its slot. No-op when nothing is hovered.
+        /// </summary>
+        private static void CommitHoveredCandidate()
+        {
+            if (hoveredWorldObjectId < 0)
+            {
+                return;
+            }
+
+            for (int index = 0; index < Candidates.Count; index++)
+            {
+                PendingLabel pending = Candidates[index];
+                WorldObject worldObject = pending.WorldObject;
+                if (worldObject == null ||
+                    worldObject.ID != hoveredWorldObjectId)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    if (TryCommitLabel(pending, out PlacedLabel placedLabel))
+                    {
+                        CommittedIds.Add(worldObject.ID);
+                        PlacedLabels.Add(placedLabel);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogSkippedObject(worldObject, exception);
+                }
+
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Records which labels survived this pass so the next one can give them
+        /// first claim on their slot. Called before the finally block clears the
+        /// placed list.
+        /// </summary>
+        private static void RememberPlacedLabels()
+        {
+            PreviouslyPlaced.Clear();
+            for (int index = 0; index < PlacedLabels.Count; index++)
+            {
+                WorldObject worldObject = PlacedLabels[index].WorldObject;
+                if (worldObject != null)
+                {
+                    PreviouslyPlaced.Add(worldObject.ID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Commits pending labels into the collision index. Each filter is
+        /// optional: a null value accepts candidates on that axis regardless.
+        /// <paramref name="playerOnly"/> selects player-owned objects;
+        /// <paramref name="returning"/> selects objects whose label was placed on
+        /// the previous pass.
+        /// </summary>
+        private static void CommitCandidates(bool? playerOnly, bool? returning)
+        {
+            for (int index = 0; index < Candidates.Count; index++)
+            {
+                PendingLabel pending = Candidates[index];
+                if (playerOnly.HasValue &&
+                    (pending.Category == RelationshipCategory.Player) !=
+                        playerOnly.Value)
+                {
+                    continue;
+                }
+
+                if (pending.WorldObject != null &&
+                    CommittedIds.Contains(pending.WorldObject.ID))
+                {
+                    continue;
+                }
+
+                if (returning.HasValue)
+                {
+                    WorldObject worldObject = pending.WorldObject;
+                    bool wasPlaced = worldObject != null &&
+                        PreviouslyPlaced.Contains(worldObject.ID);
+                    if (wasPlaced != returning.Value)
+                    {
+                        continue;
+                    }
+                }
+
+                try
+                {
+                    if (TryCommitLabel(pending, out PlacedLabel placedLabel))
+                    {
+                        if (pending.WorldObject != null)
+                        {
+                            CommittedIds.Add(pending.WorldObject.ID);
+                        }
+
+                        PlacedLabels.Add(placedLabel);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogSkippedObject(pending.WorldObject, exception);
+                }
+            }
+        }
+
+        private static bool TryCommitLabel(
+            PendingLabel pending,
             out PlacedLabel placedLabel)
         {
             placedLabel = default;
+            Rect naturalLabelRect = pending.NaturalLabelRect;
+            var candidate = new ScreenBounds(
+                naturalLabelRect.x,
+                naturalLabelRect.y,
+                naturalLabelRect.width,
+                naturalLabelRect.height);
+            if (!CollisionIndex.TryPlace(
+                candidate,
+                out ScreenBounds placed))
+            {
+                return false;
+            }
+
+            Rect labelRect = naturalLabelRect;
+            labelRect.y = placed.Y;
+            placedLabel = new PlacedLabel(
+                pending.WorldObject,
+                pending.Category,
+                pending.Kind,
+                pending.Label,
+                pending.Transition,
+                pending.IconRect,
+                naturalLabelRect,
+                labelRect);
+            return true;
+        }
+
+        private static bool TryPrepareObject(
+            WorldObject worldObject,
+            FactionLensSettings settings,
+            out PendingLabel pending)
+        {
+            pending = default;
             if (worldObject == null ||
                 worldObject.Destroyed ||
                 worldObject.def == null ||
@@ -274,31 +471,13 @@ namespace FactionLens.Presentation
                 return false;
             }
 
-            var candidate = new ScreenBounds(
-                labelRect.x,
-                labelRect.y,
-                labelRect.width,
-                labelRect.height);
-            if (!CollisionIndex.TryPlace(
-                candidate,
-                out ScreenBounds placed))
-            {
-                return false;
-            }
-
-            labelRect.y = placed.Y;
-            placedLabel = new PlacedLabel(
+            pending = new PendingLabel(
                 worldObject,
                 category,
                 kind,
                 label,
                 transition,
                 iconRect,
-                new Rect(
-                    candidate.X,
-                    candidate.Y,
-                    candidate.Width,
-                    candidate.Height),
                 labelRect);
             return true;
         }
@@ -380,12 +559,18 @@ namespace FactionLens.Presentation
         {
             Color color = settings.ColorFor(placedLabel.Category);
             color.a *= Mathf.Clamp01(placedLabel.Transition * 2f);
+            bool hovered = placedLabel.LabelRect.Contains(mousePosition);
+            if (hovered && placedLabel.WorldObject != null)
+            {
+                hoveredWorldObjectId = placedLabel.WorldObject.ID;
+            }
+
             LabelDrawer.Draw(
                 placedLabel.LabelRect,
                 placedLabel.Label,
                 color,
                 settings,
-                placedLabel.LabelRect.Contains(mousePosition));
+                hovered);
         }
 
         private static void LogSkippedObject(
@@ -495,6 +680,35 @@ namespace FactionLens.Presentation
                 default:
                     return "colors.unknown";
             }
+        }
+
+        private readonly struct PendingLabel
+        {
+            internal PendingLabel(
+                WorldObject worldObject,
+                RelationshipCategory category,
+                WorldObjectKind kind,
+                string label,
+                float transition,
+                Rect iconRect,
+                Rect naturalLabelRect)
+            {
+                WorldObject = worldObject;
+                Category = category;
+                Kind = kind;
+                Label = label;
+                Transition = transition;
+                IconRect = iconRect;
+                NaturalLabelRect = naturalLabelRect;
+            }
+
+            internal WorldObject WorldObject { get; }
+            internal RelationshipCategory Category { get; }
+            internal WorldObjectKind Kind { get; }
+            internal string Label { get; }
+            internal float Transition { get; }
+            internal Rect IconRect { get; }
+            internal Rect NaturalLabelRect { get; }
         }
 
         private readonly struct PlacedLabel
