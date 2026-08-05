@@ -279,40 +279,61 @@ namespace FactionLens.Presentation
         }
 
         /// <summary>
-        /// Commits only the candidate the pointer is currently over, for
-        /// hover-only mode. The hit test covers the icon and the space the name
-        /// would occupy, so moving from the icon onto its own label does not
-        /// make that label disappear.
+        /// Commits only the candidate whose ICON the pointer is over, for
+        /// hover-only mode.
+        /// The hit test is deliberately the icon alone. Testing the name's
+        /// rectangle as well would mean that where one object's name overlaps a
+        /// neighbouring icon, pointing at that neighbour resolves to the wrong
+        /// object and shows the wrong name. What the player is pointing at is
+        /// the icon, so that is the only thing consulted, and placement follows
+        /// entirely from the object it belongs to.
+        /// Where icons overlap, the nearest icon centre wins, so the result is
+        /// predictable rather than dependent on enumeration order.
         /// </summary>
         private static void CommitPointedCandidate(Vector2 mousePosition)
         {
+            int bestIndex = -1;
+            float bestDistance = float.MaxValue;
             for (int index = 0; index < Candidates.Count; index++)
             {
                 PendingLabel pending = Candidates[index];
-                if (!pending.IconRect.Contains(mousePosition) &&
-                    !pending.NaturalLabelRect.Contains(mousePosition))
+                if (!pending.IconRect.Contains(mousePosition))
                 {
                     continue;
                 }
 
-                try
+                float distance =
+                    (pending.IconRect.center - mousePosition).sqrMagnitude;
+                if (distance >= bestDistance)
                 {
-                    if (TryCommitLabel(pending, out PlacedLabel placedLabel))
-                    {
-                        if (pending.WorldObject != null)
-                        {
-                            CommittedIds.Add(pending.WorldObject.ID);
-                        }
-
-                        PlacedLabels.Add(placedLabel);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    LogSkippedObject(pending.WorldObject, exception);
+                    continue;
                 }
 
+                bestDistance = distance;
+                bestIndex = index;
+            }
+
+            if (bestIndex < 0)
+            {
                 return;
+            }
+
+            PendingLabel chosen = Candidates[bestIndex];
+            try
+            {
+                if (TryCommitLabel(chosen, out PlacedLabel placedLabel))
+                {
+                    if (chosen.WorldObject != null)
+                    {
+                        CommittedIds.Add(chosen.WorldObject.ID);
+                    }
+
+                    PlacedLabels.Add(placedLabel);
+                }
+            }
+            catch (Exception exception)
+            {
+                LogSkippedObject(chosen.WorldObject, exception);
             }
         }
 
