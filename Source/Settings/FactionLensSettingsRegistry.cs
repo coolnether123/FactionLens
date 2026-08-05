@@ -31,6 +31,11 @@ namespace FactionLens.Settings
                     "Enable labels", "FactionLens_Settings_Enabled", tooltipKey: "FactionLens_Settings_Enabled_Tip", scribeKey: "featureEnabled"),
                 SettingDefinitions.Toggle("visuals.background", nameof(FactionLensSettings.ShowBackground),
                     "Show label backgrounds", "FactionLens_Settings_Background", tooltipKey: "FactionLens_Settings_Background_Tip", scribeKey: "showBackground"),
+                // Corner rounding is a property of the nameplate, so the control
+                // is meaningless while the nameplate itself is switched off.
+                SettingDefinitions.Toggle("visuals.rounded", nameof(FactionLensSettings.RoundedNameplates),
+                    "Rounded nameplate corners", "FactionLens_Settings_Rounded", tooltipKey: "FactionLens_Settings_Rounded_Tip", simple: false, scribeKey: "roundedNameplates")
+                    .ShownWhen(settings => ((FactionLensSettings)settings).ShowBackground),
                 // The nameplate already supplies contrast, so an outline behind
                 // it changes nothing a player can see. Hide the control while the
                 // background is on rather than offer a setting that does nothing.

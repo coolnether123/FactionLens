@@ -13,6 +13,7 @@ namespace FactionLens.Settings
         public bool ShowOtherFactionObjects = true;
         public bool ShowLegend;
         public bool ShowBackground = true;
+        public bool RoundedNameplates = true;
         public bool ShowOutline;
         public bool ShowDisplacedLabels;
         public bool PrioritizePlayerLabels = true;
@@ -62,6 +63,7 @@ namespace FactionLens.Settings
             ShowOtherFactionObjects = true;
             ShowLegend = false;
             ShowBackground = true;
+            RoundedNameplates = true;
             ShowOutline = false;
             ShowDisplacedLabels = false;
             PrioritizePlayerLabels = true;
