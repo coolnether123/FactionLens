@@ -8,6 +8,13 @@
   "configuration": "Release",
   "assemblyName": "FactionLens",
   "packageId": "CoolNether123.FactionLens",
+  "releaseIncludePaths": [
+    "About",
+    "1.6/Assemblies/FactionLens.dll",
+    "Languages",
+    "LICENSE",
+    "README.md"
+  ],
   "dependencies": [
     "harmony",
     "spine"
