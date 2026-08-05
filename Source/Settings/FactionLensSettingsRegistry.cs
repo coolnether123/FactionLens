@@ -39,6 +39,8 @@ namespace FactionLens.Settings
                     visibleWhen: settings => !((FactionLensSettings)settings).ShowBackground),
                 SettingDefinitions.Toggle("visuals.displaced", nameof(FactionLensSettings.ShowDisplacedLabels),
                     "Keep labels that cannot fit under their icon", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", simple: false, scribeKey: "showDisplacedLabels"),
+                SettingDefinitions.Toggle("visuals.hoveronly", nameof(FactionLensSettings.LabelsOnHoverOnly),
+                    "Only show a name when pointed at", "FactionLens_Settings_HoverOnly", tooltipKey: "FactionLens_Settings_HoverOnly_Tip", scribeKey: "labelsOnHoverOnly"),
                 SettingDefinitions.Toggle("visuals.playerpriority", nameof(FactionLensSettings.PrioritizePlayerLabels),
                     "Give player colony names first claim", "FactionLens_Settings_PlayerPriority", tooltipKey: "FactionLens_Settings_PlayerPriority_Tip", simple: false, scribeKey: "prioritizePlayerLabels"),
                 SettingDefinitions.Toggle("visuals.legend", nameof(FactionLensSettings.ShowLegend),

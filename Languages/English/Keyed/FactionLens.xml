@@ -9,6 +9,8 @@
   <FactionLens_Settings_Outline_Tip>Outline label text for contrast over bright terrain.</FactionLens_Settings_Outline_Tip>
   <FactionLens_Settings_Displaced>Keep labels that cannot fit under their icon</FactionLens_Settings_Displaced>
   <FactionLens_Settings_Displaced_Tip>When two names collide, Faction Lens can move one further down and draw a connector line back to the icon it belongs to. Off by default: a name that cannot sit directly beneath its own icon is hidden instead, which keeps a crowded world map readable.</FactionLens_Settings_Displaced_Tip>
+  <FactionLens_Settings_HoverOnly>Only show a name when pointed at</FactionLens_Settings_HoverOnly>
+  <FactionLens_Settings_HoverOnly_Tip>Keeps the world map exactly as vanilla draws it until you point at something, then shows that one name in its relationship colour. Use this if the labelled map feels busy but you still want to tell friend from foe.</FactionLens_Settings_HoverOnly_Tip>
   <FactionLens_Settings_PlayerPriority>Give your own colony names first claim</FactionLens_Settings_PlayerPriority>
   <FactionLens_Settings_PlayerPriority_Tip>When names compete for the same space, your own colonies are placed first so theirs are never the ones dropped. Most useful with several colonies, when the name is all that tells them apart. Turn off to let every name compete equally.</FactionLens_Settings_PlayerPriority_Tip>
   <FactionLens_Settings_Legend>Show compact world-map legend</FactionLens_Settings_Legend>

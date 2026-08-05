@@ -159,24 +159,35 @@ namespace FactionLens.Presentation
                 // Player colonies first within that: enumeration order is
                 // otherwise arbitrary, and with several colonies late game the
                 // name is the only thing telling them apart.
-                // Above every other rule: whatever the pointer is resting on
-                // keeps its place. The player has explicitly indicated which
-                // name they care about, so culling it out from under them while
-                // they zoom is the one case where dropping a label is plainly
-                // wrong rather than merely unlucky.
-                CommitHoveredCandidate();
-
-                if (settings.PrioritizePlayerLabels)
+                if (settings.LabelsOnHoverOnly)
                 {
-                    CommitCandidates(playerOnly: true, returning: true);
-                    CommitCandidates(playerOnly: true, returning: false);
-                    CommitCandidates(playerOnly: false, returning: true);
-                    CommitCandidates(playerOnly: false, returning: false);
+                    // Quiet mode: the map keeps its icons and nothing else, and
+                    // one name appears for whatever the pointer is over. Every
+                    // placement rule below is moot with a single label, so the
+                    // priority ladder is skipped entirely.
+                    CommitPointedCandidate(mousePosition);
                 }
                 else
                 {
-                    CommitCandidates(playerOnly: null, returning: true);
-                    CommitCandidates(playerOnly: null, returning: false);
+                    // Above every other rule: whatever the pointer is resting on
+                    // keeps its place. The player has explicitly indicated which
+                    // name they care about, so culling it out from under them
+                    // while they zoom is the one case where dropping a label is
+                    // plainly wrong rather than merely unlucky.
+                    CommitHoveredCandidate();
+
+                    if (settings.PrioritizePlayerLabels)
+                    {
+                        CommitCandidates(playerOnly: true, returning: true);
+                        CommitCandidates(playerOnly: true, returning: false);
+                        CommitCandidates(playerOnly: false, returning: true);
+                        CommitCandidates(playerOnly: false, returning: false);
+                    }
+                    else
+                    {
+                        CommitCandidates(playerOnly: null, returning: true);
+                        CommitCandidates(playerOnly: null, returning: false);
+                    }
                 }
 
                 RememberPlacedLabels();
@@ -264,6 +275,44 @@ namespace FactionLens.Presentation
                 Text.Font = previousFont;
                 Text.Anchor = previousAnchor;
                 GUI.color = previousColor;
+            }
+        }
+
+        /// <summary>
+        /// Commits only the candidate the pointer is currently over, for
+        /// hover-only mode. The hit test covers the icon and the space the name
+        /// would occupy, so moving from the icon onto its own label does not
+        /// make that label disappear.
+        /// </summary>
+        private static void CommitPointedCandidate(Vector2 mousePosition)
+        {
+            for (int index = 0; index < Candidates.Count; index++)
+            {
+                PendingLabel pending = Candidates[index];
+                if (!pending.IconRect.Contains(mousePosition) &&
+                    !pending.NaturalLabelRect.Contains(mousePosition))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    if (TryCommitLabel(pending, out PlacedLabel placedLabel))
+                    {
+                        if (pending.WorldObject != null)
+                        {
+                            CommittedIds.Add(pending.WorldObject.ID);
+                        }
+
+                        PlacedLabels.Add(placedLabel);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogSkippedObject(pending.WorldObject, exception);
+                }
+
+                return;
             }
         }
 
