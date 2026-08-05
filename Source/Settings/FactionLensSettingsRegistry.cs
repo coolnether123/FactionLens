@@ -35,8 +35,10 @@ namespace FactionLens.Settings
                 // indistinguishable from the feature being broken, and the
                 // enable toggle already covers "off".
                 SettingDefinitions.Slider("visuals.opacity", nameof(FactionLensSettings.LabelOpacity),
-                    0.35f, 1f, "Label opacity", "FactionLens_Settings_Opacity", tooltipKey: "FactionLens_Settings_Opacity_Tip",
-                    step: 0.05f, valueFormatter: value => Mathf.RoundToInt(value * 100f) + "%", scribeKey: "labelOpacity"),
+                    "Label opacity", "FactionLens_Settings_Opacity", tooltipKey: "FactionLens_Settings_Opacity_Tip", scribeKey: "labelOpacity")
+                    .Range(0.35f, 1f)
+                    .Step(0.05f)
+                    .ShowsPercent(),
                 // Corner rounding is a property of the nameplate, so the control
                 // is meaningless while the nameplate itself is switched off.
                 SettingDefinitions.Toggle("visuals.rounded", nameof(FactionLensSettings.RoundedNameplates),
