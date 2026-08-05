@@ -7,6 +7,8 @@
   <FactionLens_Settings_Background_Tip>Place a compact translucent nameplate behind each label.</FactionLens_Settings_Background_Tip>
   <FactionLens_Settings_Outline>Dark text outline</FactionLens_Settings_Outline>
   <FactionLens_Settings_Outline_Tip>Outline label text for contrast over bright terrain.</FactionLens_Settings_Outline_Tip>
+  <FactionLens_Settings_Displaced>Keep labels that cannot fit under their icon</FactionLens_Settings_Displaced>
+  <FactionLens_Settings_Displaced_Tip>When two names collide, Faction Lens can move one further down and draw a connector line back to the icon it belongs to. Off by default: a name that cannot sit directly beneath its own icon is hidden instead, which keeps a crowded world map readable.</FactionLens_Settings_Displaced_Tip>
   <FactionLens_Settings_Legend>Show compact world-map legend</FactionLens_Settings_Legend>
   <FactionLens_Settings_ObjectTypes>World-object types</FactionLens_Settings_ObjectTypes>
   <FactionLens_Settings_Settlements>Settlements</FactionLens_Settings_Settlements>
