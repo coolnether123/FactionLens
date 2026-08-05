@@ -31,6 +31,12 @@ namespace FactionLens.Settings
                     "Enable labels", "FactionLens_Settings_Enabled", tooltipKey: "FactionLens_Settings_Enabled_Tip", scribeKey: "featureEnabled"),
                 SettingDefinitions.Toggle("visuals.background", nameof(FactionLensSettings.ShowBackground),
                     "Show label backgrounds", "FactionLens_Settings_Background", tooltipKey: "FactionLens_Settings_Background_Tip", scribeKey: "showBackground"),
+                // Floor of 0.35 rather than 0: a label faded to nothing is
+                // indistinguishable from the feature being broken, and the
+                // enable toggle already covers "off".
+                SettingDefinitions.Slider("visuals.opacity", nameof(FactionLensSettings.LabelOpacity),
+                    0.35f, 1f, "Label opacity", "FactionLens_Settings_Opacity", tooltipKey: "FactionLens_Settings_Opacity_Tip",
+                    step: 0.05f, valueFormatter: value => Mathf.RoundToInt(value * 100f) + "%", scribeKey: "labelOpacity"),
                 // Corner rounding is a property of the nameplate, so the control
                 // is meaningless while the nameplate itself is switched off.
                 SettingDefinitions.Toggle("visuals.rounded", nameof(FactionLensSettings.RoundedNameplates),
