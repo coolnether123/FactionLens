@@ -45,6 +45,12 @@ namespace FactionLens.Presentation
         // repaint, or -1. Carried across passes so a hovered name keeps its
         // place while the player zooms out under it.
         private static int hoveredWorldObjectId = -1;
+        // Hover-only mode keeps showing the name you summoned while the pointer
+        // drifts away from its icon, fading it out over this range so the map
+        // does not blink every time the cursor wobbles.
+        private const float HoverGraceHold = 28f;
+        private const float HoverGraceRadius = 110f;
+        private static int hoverOnlyTargetId = -1;
         private static WorldObject pendingSelection;
 
         internal static void Draw()
@@ -292,6 +298,77 @@ namespace FactionLens.Presentation
         /// </summary>
         private static void CommitPointedCandidate(Vector2 mousePosition)
         {
+            int index = FindIconUnderPointer(mousePosition);
+            float alpha = 1f;
+
+            if (index >= 0)
+            {
+                WorldObject picked = Candidates[index].WorldObject;
+                hoverOnlyTargetId = picked != null ? picked.ID : -1;
+            }
+            else
+            {
+                // No icon under the pointer. Keep showing whatever was last
+                // summoned, fading with distance, so drifting off an icon does
+                // not snap the name away.
+                index = FindCandidateById(hoverOnlyTargetId);
+                if (index < 0)
+                {
+                    hoverOnlyTargetId = -1;
+                    return;
+                }
+
+                PendingLabel held = Candidates[index];
+
+                // Resting on the name itself holds it at full strength. This
+                // consults the name rectangle only for the object already
+                // chosen by its icon, so it can never pick a different object
+                // than the one being pointed at.
+                if (!held.NaturalLabelRect.Contains(mousePosition))
+                {
+                    float distance =
+                        RectDistance(held.IconRect, mousePosition);
+                    if (distance > HoverGraceRadius)
+                    {
+                        hoverOnlyTargetId = -1;
+                        return;
+                    }
+
+                    alpha = 1f - Mathf.Clamp01(
+                        (distance - HoverGraceHold) /
+                        (HoverGraceRadius - HoverGraceHold));
+                    if (alpha <= 0.01f)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            PendingLabel chosen = Candidates[index];
+            try
+            {
+                if (TryCommitLabel(chosen, out PlacedLabel placedLabel, alpha))
+                {
+                    if (chosen.WorldObject != null)
+                    {
+                        CommittedIds.Add(chosen.WorldObject.ID);
+                    }
+
+                    PlacedLabels.Add(placedLabel);
+                }
+            }
+            catch (Exception exception)
+            {
+                LogSkippedObject(chosen.WorldObject, exception);
+            }
+        }
+
+        /// <summary>
+        /// Index of the candidate whose icon is under the pointer, nearest
+        /// centre first so overlapping icons resolve predictably. -1 for none.
+        /// </summary>
+        private static int FindIconUnderPointer(Vector2 mousePosition)
+        {
             int bestIndex = -1;
             float bestDistance = float.MaxValue;
             for (int index = 0; index < Candidates.Count; index++)
@@ -313,28 +390,36 @@ namespace FactionLens.Presentation
                 bestIndex = index;
             }
 
-            if (bestIndex < 0)
+            return bestIndex;
+        }
+
+        private static int FindCandidateById(int worldObjectId)
+        {
+            if (worldObjectId < 0)
             {
-                return;
+                return -1;
             }
 
-            PendingLabel chosen = Candidates[bestIndex];
-            try
+            for (int index = 0; index < Candidates.Count; index++)
             {
-                if (TryCommitLabel(chosen, out PlacedLabel placedLabel))
+                WorldObject worldObject = Candidates[index].WorldObject;
+                if (worldObject != null && worldObject.ID == worldObjectId)
                 {
-                    if (chosen.WorldObject != null)
-                    {
-                        CommittedIds.Add(chosen.WorldObject.ID);
-                    }
-
-                    PlacedLabels.Add(placedLabel);
+                    return index;
                 }
             }
-            catch (Exception exception)
-            {
-                LogSkippedObject(chosen.WorldObject, exception);
-            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Shortest distance from a point to a rectangle; zero when inside.
+        /// </summary>
+        private static float RectDistance(Rect rect, Vector2 point)
+        {
+            float dx = Mathf.Max(rect.xMin - point.x, 0f, point.x - rect.xMax);
+            float dy = Mathf.Max(rect.yMin - point.y, 0f, point.y - rect.yMax);
+            return Mathf.Sqrt((dx * dx) + (dy * dy));
         }
 
         /// <summary>
@@ -450,7 +535,8 @@ namespace FactionLens.Presentation
 
         private static bool TryCommitLabel(
             PendingLabel pending,
-            out PlacedLabel placedLabel)
+            out PlacedLabel placedLabel,
+            float alphaScale = 1f)
         {
             placedLabel = default;
             Rect naturalLabelRect = pending.NaturalLabelRect;
@@ -473,7 +559,7 @@ namespace FactionLens.Presentation
                 pending.Category,
                 pending.Kind,
                 pending.Label,
-                pending.Transition,
+                pending.Transition * alphaScale,
                 pending.IconRect,
                 naturalLabelRect,
                 labelRect);
