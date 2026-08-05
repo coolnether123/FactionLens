@@ -25,12 +25,21 @@ namespace FactionLens.Presentation
 
         private static Texture2D cornerTexture;
 
+        // Text.CalcSize returns the font's line box, not the glyphs. That box
+        // already carries several pixels of internal leading above and below the
+        // letters, so equal geometric padding on both axes reads as too much
+        // space top and bottom. The vertical figure is therefore smaller than
+        // the horizontal one by roughly that leading, which is what makes the
+        // visible margin look even on all four sides.
+        private const float HorizontalPadding = 6f;
+        private const float VerticalPadding = 2f;
+
         internal static Vector2 Measure(string label)
         {
             Vector2 textSize = Text.CalcSize(label);
             return new Vector2(
-                Mathf.Ceil(textSize.x) + 8f,
-                Mathf.Max(18f, Mathf.Ceil(textSize.y) + 4f));
+                Mathf.Ceil(textSize.x) + HorizontalPadding * 2f,
+                Mathf.Max(20f, Mathf.Ceil(textSize.y) + VerticalPadding * 2f));
         }
 
         internal static void Draw(
@@ -59,21 +68,28 @@ namespace FactionLens.Presentation
                 Widgets.DrawHighlight(rect);
             }
 
-            Rect textRect = rect.ContractedBy(4f, 1f);
+            // Centre inside the whole plate rather than inside a contracted
+            // rect. Any rounding left over from Measure is then split evenly
+            // between the two sides instead of piling up on the right and the
+            // bottom, which is what made the margins look lopsided.
+            TextAnchor previousAnchor = Text.Anchor;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
             if (settings.ShowOutline)
             {
                 Color outline = OutlineColor;
                 outline.a *= color.a;
                 GUI.color = outline;
-                Widgets.Label(Offset(textRect, -1f, 0f), label);
-                Widgets.Label(Offset(textRect, 1f, 0f), label);
-                Widgets.Label(Offset(textRect, 0f, -1f), label);
-                Widgets.Label(Offset(textRect, 0f, 1f), label);
+                Widgets.Label(Offset(rect, -1f, 0f), label);
+                Widgets.Label(Offset(rect, 1f, 0f), label);
+                Widgets.Label(Offset(rect, 0f, -1f), label);
+                Widgets.Label(Offset(rect, 0f, 1f), label);
             }
 
             GUI.color = color;
-            Widgets.Label(textRect, label);
+            Widgets.Label(rect, label);
             GUI.color = previousColor;
+            Text.Anchor = previousAnchor;
         }
 
         /// <summary>
