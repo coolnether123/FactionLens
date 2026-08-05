@@ -42,6 +42,12 @@ namespace FactionLens.Presentation
         {
             Color previousColor = GUI.color;
 
+            // One multiplication, applied before anything is drawn, so the
+            // player's opacity setting scales the plate, the outline and the
+            // text together and the label keeps its own internal contrast at
+            // every setting. color.a already carries the fade transition.
+            color.a *= Mathf.Clamp01(settings.LabelOpacity);
+
             if (settings.ShowBackground)
             {
                 Color background = BackgroundColor;
