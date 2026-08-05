@@ -53,11 +53,11 @@ namespace FactionLens.Presentation
     internal sealed class ScreenCollisionIndex
     {
         private const float DefaultCellSize = 64f;
-        private const int DefaultVerticalShifts = 3;
+        internal const int DefaultVerticalShifts = 3;
         private const float DefaultVerticalGap = 2f;
 
         private readonly float cellSize;
-        private readonly int maxVerticalShifts;
+        private int maxVerticalShifts;
         private readonly float verticalGap;
         private readonly List<ScreenBounds> accepted =
             new List<ScreenBounds>();
@@ -100,6 +100,27 @@ namespace FactionLens.Presentation
         }
 
         internal int Count => accepted.Count;
+
+        /// <summary>
+        /// How many times a colliding candidate may be shifted down before it
+        /// is refused. Set to zero to require that every label sit at its
+        /// natural anchor: a candidate that collides is then dropped outright
+        /// rather than displaced, and it reserves no screen space, so it can
+        /// never push a neighbouring label out of its own anchored slot.
+        /// </summary>
+        internal int MaxVerticalShifts
+        {
+            get { return maxVerticalShifts; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                maxVerticalShifts = value;
+            }
+        }
 
         internal long ComparisonCount { get; private set; }
 

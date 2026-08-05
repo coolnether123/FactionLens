@@ -33,6 +33,8 @@ namespace FactionLens.Settings
                     "Show label backgrounds", "FactionLens_Settings_Background", tooltipKey: "FactionLens_Settings_Background_Tip", scribeKey: "showBackground"),
                 SettingDefinitions.Toggle("visuals.outline", nameof(FactionLensSettings.ShowOutline),
                     "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline"),
+                SettingDefinitions.Toggle("visuals.displaced", nameof(FactionLensSettings.ShowDisplacedLabels),
+                    "Show displaced labels", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", scribeKey: "showDisplacedLabels"),
                 SettingDefinitions.Toggle("visuals.legend", nameof(FactionLensSettings.ShowLegend),
                     "Show legend", "FactionLens_Settings_Legend", scribeKey: "showLegend"),
 

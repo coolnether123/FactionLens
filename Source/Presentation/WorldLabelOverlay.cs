@@ -91,6 +91,10 @@ namespace FactionLens.Presentation
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 CollisionIndex.Clear();
+                CollisionIndex.MaxVerticalShifts =
+                    settings.ShowDisplacedLabels
+                        ? ScreenCollisionIndex.DefaultVerticalShifts
+                        : 0;
                 PlacedLabels.Clear();
 
                 if (settings.ShowLegend &&
