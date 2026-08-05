@@ -31,8 +31,12 @@ namespace FactionLens.Settings
                     "Enable labels", "FactionLens_Settings_Enabled", tooltipKey: "FactionLens_Settings_Enabled_Tip", scribeKey: "featureEnabled"),
                 SettingDefinitions.Toggle("visuals.background", nameof(FactionLensSettings.ShowBackground),
                     "Show label backgrounds", "FactionLens_Settings_Background", tooltipKey: "FactionLens_Settings_Background_Tip", scribeKey: "showBackground"),
+                // The nameplate already supplies contrast, so an outline behind
+                // it changes nothing a player can see. Hide the control while the
+                // background is on rather than offer a setting that does nothing.
                 SettingDefinitions.Toggle("visuals.outline", nameof(FactionLensSettings.ShowOutline),
-                    "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline"),
+                    "Show label outlines", "FactionLens_Settings_Outline", tooltipKey: "FactionLens_Settings_Outline_Tip", scribeKey: "showOutline",
+                    visibleWhen: settings => !((FactionLensSettings)settings).ShowBackground),
                 SettingDefinitions.Toggle("visuals.displaced", nameof(FactionLensSettings.ShowDisplacedLabels),
                     "Keep labels that cannot fit under their icon", "FactionLens_Settings_Displaced", tooltipKey: "FactionLens_Settings_Displaced_Tip", simple: false, scribeKey: "showDisplacedLabels"),
                 SettingDefinitions.Toggle("visuals.playerpriority", nameof(FactionLensSettings.PrioritizePlayerLabels),
@@ -64,11 +68,6 @@ namespace FactionLens.Settings
                 // Pinned so the swatches stay on screen while the colour rows
                 // above them scroll; changing a colour is pointless if you have
                 // to scroll away from the preview to reach the control.
-                SettingDefinitions.Header(
-                    "preview.header",
-                    "Preview",
-                    "FactionLens_Settings_Preview",
-                    SettingPin.Bottom),
                 SettingDefinitions.Custom(
                     "preview.labels",
                     DrawPreview,
