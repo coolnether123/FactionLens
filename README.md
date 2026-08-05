@@ -13,6 +13,7 @@ colors that are resolved from current game state every repaint.
 - An Okabe-Ito-derived colorblind preset.
 - Independent switches for settlements, sites, and other world objects.
 - Optional compact legend, dark nameplate background, and text outline.
+- An opacity slider so labels can sit lightly over the terrain.
 - A quiet mode that shows a name only for the world object you point at.
 - A pinned colour preview that stays visible while you scroll the settings.
 - No game-save component and no diplomacy changes.
@@ -40,6 +41,17 @@ zooming does not make names flicker in and out.
 In quiet mode no names are drawn at all until you point at an icon, and then
 only that one appears. It fades out as the pointer moves away, and holds at full
 strength while the pointer rests on the name itself.
+
+Label opacity defaults to 80% and scales the nameplate, its outline, and the
+text together, so a label keeps its own internal contrast at every setting
+rather than the text washing out over a still-solid plate. The floor is 35%
+rather than zero, because a label faded to nothing is indistinguishable from
+the mod being broken, and the enable switch already covers off.
+
+Advanced holds the settings most players never need: rounded nameplate corners
+(on by default), displaced labels, player-colony placement priority, and the
+reset button. The outline switch hides itself whenever the nameplate is on,
+since an outline behind a solid plate changes nothing you can see.
 
 ## Requirements
 
