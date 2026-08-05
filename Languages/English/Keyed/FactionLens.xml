@@ -5,6 +5,8 @@
   <FactionLens_Settings_Enabled_Tip>Turn off to restore the unmodified vanilla world map immediately. This setting adds no save data.</FactionLens_Settings_Enabled_Tip>
   <FactionLens_Settings_Background>Readable dark background</FactionLens_Settings_Background>
   <FactionLens_Settings_Background_Tip>Place a compact translucent nameplate behind each label.</FactionLens_Settings_Background_Tip>
+  <FactionLens_Settings_Rounded>Rounded nameplate corners</FactionLens_Settings_Rounded>
+  <FactionLens_Settings_Rounded_Tip>Softens the four corners of the dark nameplate instead of drawing a hard rectangle. Purely cosmetic; it changes nothing about which names are shown or where they sit.</FactionLens_Settings_Rounded_Tip>
   <FactionLens_Settings_Outline>Dark text outline</FactionLens_Settings_Outline>
   <FactionLens_Settings_Outline_Tip>Outline label text for contrast over bright terrain.</FactionLens_Settings_Outline_Tip>
   <FactionLens_Settings_Displaced>Keep labels that cannot fit under their icon</FactionLens_Settings_Displaced>
