@@ -228,3 +228,61 @@ clean build, and package checks. Live world-map verification selected the
 settlement named by a clicked label, kept connector lines behind nameplates,
 and did not disclose an unknown site's owner. No Faction Lens exception was
 recorded in the all-suite or compatibility save/reload runs.
+
+## Public-release gate — 2026-08-05
+
+Re-run after the hover-only mode, player-colony placement priority, rounded
+nameplate corners, label-opacity slider, and nameplate-margin work. Every
+figure below was measured on this date, not carried forward.
+
+Automated:
+
+- `dotnet run --project Tests\Mod.Tests.csproj -c Release` reported
+  `PASS: 9 Faction Lens contracts (13 assertions)`, exit code 0. Individually:
+  undisclosed ownership stays unknown; factionless precedes relationship;
+  player precedes diplomacy; all diplomatic states classify; object switches
+  are honored; collision placement semantics; bucket-boundary overlap; dense
+  comparisons stay local; label bounds are exact.
+- `Tests\Test-ConnectorRenderOrder.ps1` passed, exit code 0: displaced
+  connectors render behind all nameplates and normal labels remain
+  unconnected.
+- `Tests\Test-LabelSelectionBoundary.ps1` passed, exit code 0: world-object
+  nameplates capture clicks before vanilla and apply exact selection
+  afterward.
+- Centralized build through `Invoke-RimWorldBuild.ps1` for RimWorld 1.6 with
+  resolved `harmony,spine` returned `Succeeded: true`, exit code 0. The
+  standard-error log hashed to
+  `E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855`,
+  which is the SHA-256 of an empty file: the build emitted nothing on stderr.
+
+Shipped binaries:
+
+- `1.6\Assemblies\FactionLens.dll` — 37,888 bytes, SHA-256
+  `04D783242B25668F5C441F51F2AB36A037356267DFB703C10F56FC96D12A4F65`.
+- Built against `Spine.dll` — 113,152 bytes, SHA-256
+  `A04B7D2F03AD2378C263FF9CB15959FBB7383CA0B5AFC73D67017F0BC39E4E1A`.
+
+In-game:
+
+- Isolated lane `FactionLens-a860c97c4d16494b94a853df1c9d06b0` reached
+  `programState=Playing` with one ready map and three free colonists at
+  1920x1080, UI scale 1, tick 18514.
+- The harness reported active mods as exactly Core, Harmony, RimWorld Agent,
+  Spine, Faction Lens, and Task Interrupt.
+- `Player.log` contained no exception, no `MissingMethodException`, and no
+  error of any kind. That last point is load-bearing beyond the usual: the
+  opacity slider is the first consumer of Spine's new `Slider` setting type,
+  so a stale Spine would have surfaced here as a `MissingMethodException`
+  rather than as a silent no-op.
+
+Documentation state at this gate:
+
+- All 39 translation keys are referenced; none are orphaned.
+- `README.md` and `About.xml` describe label opacity and the Advanced tier.
+- `Engineering\build.json` restricts the release payload to `About`,
+  `1.6/Assemblies/FactionLens.dll`, `Languages`, `LICENSE`, and `README.md`,
+  so `Source`, `Tests`, `docs`, and `Developer` cannot reach a package.
+
+Not covered by this gate: a save/reload cycle and a large-mod-list
+compatibility pass, both of which were last exercised at the 2026-08-03 gate
+and are unaffected by presentation-only changes.
