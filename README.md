@@ -57,16 +57,16 @@ since an outline behind a solid plate changes nothing you can see.
 
 - RimWorld 1.6
 - Harmony
-- Spine (`CoolNether123.Spine`)
+- SpineLib (`CoolNether123.Spine`)
 
 ## Installation
 
-Faction Lens needs Harmony and Spine. Harmony is on the Steam Workshop; Spine
-is not published there yet, so take a build from
-[coolnether123/Spine](https://github.com/coolnether123/Spine).
+Faction Lens needs Harmony and SpineLib. Harmony is on the Steam Workshop, and
+[SpineLib is available there too](https://steamcommunity.com/sharedfiles/filedetails/?id=3778463813).
+For a repository build, use [coolnether123/Spine](https://github.com/coolnether123/Spine).
 
 Copy both `FactionLens` and `Spine` into RimWorld's `Mods` directory, then
-enable Harmony, Spine, and Faction Lens in that order. No other mod is
+enable Harmony, SpineLib, and Faction Lens in that order. No other mod is
 required, and Faction Lens depends on no other gameplay mod.
 
 ## Build and test
