@@ -24,9 +24,15 @@
     <li>brrainz.harmony</li>
     <li>CoolNether123.Spine</li>
   </loadAfter>
-  <description>Faction Lens makes the world map readable at a glance by adding relationship-colored names below settlements, sites, abandoned locations, and compatible modded world objects.
+  <description>Relationship-colored names under settlements, sites, and other faction objects on the world map, so you can tell friend from foe at a glance.
 
-Click a displayed name to select its world object. Labels update immediately when diplomacy or ownership changes. Configure every category color, apply a colorblind-friendly palette, choose which objects participate, and optionally add a compact legend, dark nameplate, or text outline. Label opacity is a slider, so names can sit as lightly over the terrain as you like. A name that cannot sit directly beneath its own icon is hidden by default, so a crowded world map stays readable; turn displaced labels back on to keep them, joined to their icon by a subtle connector. If a labelled map is more than you want, switch to showing a name only for whatever you point at. Ownership that vanilla does not disclose remains unknown.
+- Separate colors for hostile, neutral, allied, your own, abandoned, and unknown
+- Colorblind preset
+- Click a name to select that object
+- Opacity slider and an optional legend
+- Hover-only mode that keeps the map quiet until you point at something
 
-Faction Lens changes no diplomacy mechanics or save data and never recolors vanilla icons.</description>
+Adds no save data and changes no diplomacy.
+
+Requires Harmony and Spine.</description>
 </ModMetaData>
