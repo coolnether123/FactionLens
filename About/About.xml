@@ -3,7 +3,6 @@
   <name>Faction Lens</name>
   <author>CoolNether123</author>
   <packageId>CoolNether123.FactionLens</packageId>
-  <modVersion>1.0.0</modVersion>
   <supportedVersions>
     <li>0.13</li>
     <li>0.14</li>
