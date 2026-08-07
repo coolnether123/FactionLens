@@ -34,7 +34,10 @@
     <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == '0.13' Or '$(Configuration)' == '0.14' Or '$(Configuration)' == '0.15'">
-    <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP;RWT_LEGACY_FACTION_MAP</DefineConstants>
+    <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP;RWT_LEGACY_FACTION_MAP;RWT_LEGACY_FACTION_MAP_014_PLUS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '0.13'">
+    <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP;RWT_LEGACY_FACTION_MAP;RWT_LEGACY_FACTION_MAP_013</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == '0.16'">
     <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP;RWT_LEGACY_WORLD_OBJECTS</DefineConstants>
