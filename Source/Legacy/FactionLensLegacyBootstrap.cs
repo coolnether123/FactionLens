@@ -1,3 +1,4 @@
+#if RWT_LEGACY_BOOTSTRAP
 using Verse;
 
 namespace FactionLens.Legacy
@@ -13,3 +14,4 @@ namespace FactionLens.Legacy
         }
     }
 }
+#endif
