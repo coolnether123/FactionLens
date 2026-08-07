@@ -1,5 +1,6 @@
 #if RWT_LEGACY_BOOTSTRAP
 using Verse;
+using HarmonyLib;
 
 namespace FactionLens.Legacy
 {
@@ -10,7 +11,19 @@ namespace FactionLens.Legacy
     {
         static FactionLensLegacyBootstrap()
         {
-            Log.Message("[FactionLens] Loaded legacy compatibility assembly.");
+            try
+            {
+                new Harmony("CoolNether123.FactionLens").PatchAll(
+                    typeof(FactionLensLegacyBootstrap).Assembly);
+                Log.Message(
+                    "[FactionLens] Legacy world-label compatibility initialized.");
+            }
+            catch (System.Exception exception)
+            {
+                Log.Error(
+                    "[FactionLens] Legacy compatibility initialization failed: " +
+                    exception);
+            }
         }
     }
 }
