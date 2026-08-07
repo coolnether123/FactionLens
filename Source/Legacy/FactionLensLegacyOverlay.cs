@@ -20,24 +20,44 @@ namespace FactionLens.Legacy
                 return;
             }
 
+#if RWT_LEGACY_FACTION_MAP_013
             Faction colony = Faction.OfColony;
+#else
+            Faction colony = Faction.OfPlayer;
+#endif
             foreach (Faction faction in
                 Find.FactionManager.AllFactionsInViewOrder)
             {
+#if RWT_LEGACY_FACTION_MAP_013
                 if (faction == null ||
                     faction.def == null ||
                     faction.def.hidden ||
-                    faction.def == FactionDefOf.Colony ||
+                    faction == colony ||
                     faction.homeSquare.IsInvalid ||
                     String.IsNullOrEmpty(faction.name))
+#else
+                if (faction == null ||
+                    faction.def == null ||
+                    faction.def.hidden ||
+                    faction.IsPlayer ||
+                    faction.homeSquare.IsInvalid ||
+                    String.IsNullOrEmpty(faction.Name))
+#endif
                 {
                     continue;
                 }
 
+#if RWT_LEGACY_FACTION_MAP_013
                 DrawText(
                     new Vector2(faction.homeSquare.x, faction.homeSquare.z),
                     faction.name,
                     ColorFor(faction, colony));
+#else
+                DrawText(
+                    new Vector2(faction.homeSquare.x, faction.homeSquare.z),
+                    faction.Name,
+                    ColorFor(faction, colony));
+#endif
             }
         }
 
@@ -137,7 +157,11 @@ namespace FactionLens.Legacy
                 return new Color(0.62f, 0.34f, 0.90f, 0.85f);
             }
 
+#if RWT_LEGACY_FACTION_MAP_013
+            if (faction == colony)
+#else
             if (faction.IsPlayer)
+#endif
             {
                 return new Color(0.18f, 0.86f, 0.78f, 0.85f);
             }
