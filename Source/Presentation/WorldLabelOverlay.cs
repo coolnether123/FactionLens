@@ -63,7 +63,9 @@ namespace FactionLens.Presentation
             if (settings == null ||
                 !settings.FeatureEnabled ||
                 currentEvent.type != EventType.Repaint ||
+#if RWT_HAS_DRAW_WORLD_OBJECTS
                 !DebugViewSettings.drawWorldObjects ||
+#endif
                 Find.WorldObjects == null)
             {
                 return;
@@ -85,7 +87,9 @@ namespace FactionLens.Presentation
                 !settings.FeatureEnabled ||
                 currentEvent.type != EventType.MouseDown ||
                 currentEvent.button != 0 ||
+#if RWT_HAS_DRAW_WORLD_OBJECTS
                 !DebugViewSettings.drawWorldObjects ||
+#endif
                 Find.WorldObjects == null)
             {
                 return;
@@ -573,15 +577,16 @@ namespace FactionLens.Presentation
         {
             pending = default;
             if (worldObject == null ||
+#if RWT_HAS_WORLD_OBJECT_DESTROYED
                 worldObject.Destroyed ||
+#endif
                 worldObject.def == null ||
                 worldObject.HiddenBehindTerrainNow())
             {
                 return false;
             }
 
-            float transition =
-                ExpandableWorldObjectsUtility.TransitionPct(worldObject);
+            float transition = GetTransitionPct(worldObject);
             if (transition <= 0.08f)
             {
                 return false;
@@ -668,8 +673,14 @@ namespace FactionLens.Presentation
                 return true;
             }
 
+            Rect colorBindingRect = placedLabel.LabelRect;
+#if RWT_RECT_CONTRACTED_BY_HEIGHT
+            colorBindingRect = colorBindingRect.ContractedBy(4f, 1f);
+#else
+            colorBindingRect = colorBindingRect.ContractedBy(4f);
+#endif
             Bootstrap.FactionLensMod.ContextualSettings?.Bind(
-                placedLabel.LabelRect.ContractedBy(4f, 1f),
+                colorBindingRect,
                 ContextualSettingsTarget.Exact(
                     ColorSettingId(placedLabel.Category),
                     "colors.header"),
@@ -683,6 +694,15 @@ namespace FactionLens.Presentation
             }
 
             return false;
+        }
+
+        private static float GetTransitionPct(WorldObject worldObject)
+        {
+#if RWT_TRANSITION_PCT_METHOD
+            return ExpandableWorldObjectsUtility.TransitionPct(worldObject);
+#else
+            return ExpandableWorldObjectsUtility.TransitionPct;
+#endif
         }
 
         private static void DrawConnector(PlacedLabel placedLabel)
@@ -744,7 +764,11 @@ namespace FactionLens.Presentation
         {
             WorldObject worldObject = pendingSelection;
             pendingSelection = null;
-            if (worldObject == null || worldObject.Destroyed)
+            if (worldObject == null
+#if RWT_HAS_WORLD_OBJECT_DESTROYED
+                || worldObject.Destroyed
+#endif
+                )
             {
                 return;
             }

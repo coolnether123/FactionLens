@@ -10,4 +10,48 @@
     <RwtUseSpine>true</RwtUseSpine>
     <RwtUseUnityImGui>true</RwtUseUnityImGui>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.6'">
+    <DefineConstants>TRACE;RWT_HAS_ABANDONED_SETTLEMENT;RWT_HAS_DRAW_WORLD_OBJECTS;RWT_TRANSITION_PCT_METHOD;RWT_RECT_CONTRACTED_BY_HEIGHT;RWT_HAS_WORLD_OBJECT_DESTROYED;RWT_HAS_FACTION_RELATION_KIND</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.5' Or '$(Configuration)' == '1.4' Or '$(Configuration)' == '1.3'">
+    <DefineConstants>TRACE;RWT_RECT_CONTRACTED_BY_HEIGHT;RWT_HAS_WORLD_OBJECT_DESTROYED;RWT_HAS_FACTION_RELATION_KIND</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.2' Or '$(Configuration)' == '1.1'">
+    <DefineConstants>TRACE;RWT_HAS_WORLD_OBJECT_DESTROYED;RWT_HAS_FACTION_RELATION_KIND</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.0' Or '$(Configuration)' == '0.19'">
+    <DefineConstants>TRACE;RWT_HAS_FACTION_RELATION_KIND</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '0.18' Or '$(Configuration)' == '0.17'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.0'">
+    <RwtUseUnityImGui>false</RwtUseUnityImGui>
+    <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '0.16' Or '$(Configuration)' == '0.15' Or '$(Configuration)' == '0.14' Or '$(Configuration)' == '0.13' Or '$(Configuration)' == 'Alpha4'">
+    <RwtUseUnityImGui>false</RwtUseUnityImGui>
+    <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '0.16' Or '$(Configuration)' == '0.15' Or '$(Configuration)' == '0.14' Or '$(Configuration)' == '0.13'">
+    <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Alpha4'">
+    <DefineConstants>TRACE;RWT_LEGACY_BOOTSTRAP;RWT_RIMWORLD_ALPHA4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '0.17' Or '$(Configuration)' == '0.18' Or '$(Configuration)' == '0.19'">
+    <RwtUseUnityImGui>false</RwtUseUnityImGui>
+    <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(RwtUseLegacyUnityAssembly)' == 'true'">
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == '0.16' Or '$(Configuration)' == '0.15' Or '$(Configuration)' == '0.14' Or '$(Configuration)' == '0.13' Or '$(Configuration)' == 'Alpha4'">
+    <Compile Remove="**\*.cs" />
+    <Compile Include="Legacy\FactionLensLegacyBootstrap.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
 </Project>

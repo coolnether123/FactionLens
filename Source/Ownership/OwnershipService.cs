@@ -32,6 +32,7 @@ namespace FactionLens.Ownership
             // Vanilla deliberately retains the former faction reference on an
             // abandoned settlement. Its visible state is nevertheless
             // abandoned, not a live diplomatic holding.
+#if RWT_HAS_ABANDONED_SETTLEMENT
             if (worldObject is AbandonedSettlement)
             {
                 category = RelationshipClassifier.Classify(
@@ -42,6 +43,7 @@ namespace FactionLens.Ownership
                     true);
                 return true;
             }
+#endif
 
             Faction faction = worldObject.Faction;
             OwnershipKnowledge knowledge =
@@ -103,6 +105,7 @@ namespace FactionLens.Ownership
                 return PlayerRelation.Unknown;
             }
 
+#if RWT_HAS_FACTION_RELATION_KIND
             switch (faction.PlayerRelationKind)
             {
                 case FactionRelationKind.Hostile:
@@ -114,6 +117,9 @@ namespace FactionLens.Ownership
                 default:
                     return PlayerRelation.Unknown;
             }
+#else
+            return PlayerRelation.Unknown;
+#endif
         }
     }
 }
