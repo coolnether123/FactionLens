@@ -1,10 +1,12 @@
 #if RWT_LEGACY_BOOTSTRAP
 using System;
 using HarmonyLib;
-using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+#if !RWT_RIMWORLD_ALPHA4
+using RimWorld;
+using RimWorld.Planet;
+#endif
 
 namespace FactionLens.Legacy
 {
@@ -150,6 +152,7 @@ namespace FactionLens.Legacy
         }
 #endif
 
+#if RWT_LEGACY_FACTION_MAP || RWT_LEGACY_WORLD_OBJECTS
         private static Color ColorFor(Faction faction, Faction colony)
         {
             if (faction == null)
@@ -178,6 +181,7 @@ namespace FactionLens.Legacy
 
             return new Color(0.96f, 0.82f, 0.24f, 0.85f);
         }
+#endif
     }
 
 #if RWT_LEGACY_FACTION_MAP
