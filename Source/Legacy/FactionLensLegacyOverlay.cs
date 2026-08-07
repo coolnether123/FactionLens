@@ -109,9 +109,9 @@ namespace FactionLens.Legacy
                 TextAnchor previousAnchor = Text.Anchor;
                 try
                 {
-                    GUI.color = TexUI.GrayTextBG.color;
+                    GUI.color = Color.white;
                     GUI.DrawTexture(labelRect, TexUI.GrayTextBG);
-                    GUI.color = ColorFor(worldObject.Faction, Faction.OfColony);
+                    GUI.color = ColorFor(worldObject.Faction, Faction.OfPlayer);
                     Text.Anchor = TextAnchor.UpperCenter;
                     Widgets.Label(
                         new Rect(
