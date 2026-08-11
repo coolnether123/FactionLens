@@ -5,6 +5,11 @@
   <FactionLens_Settings_Enabled_Tip>Turn off to restore the unmodified vanilla world map immediately. This setting adds no save data.</FactionLens_Settings_Enabled_Tip>
   <FactionLens_Settings_Background>Readable dark background</FactionLens_Settings_Background>
   <FactionLens_Settings_Background_Tip>Place a compact translucent nameplate behind each label.</FactionLens_Settings_Background_Tip>
+  <FactionLens_Settings_FontSize>Label font size</FactionLens_Settings_FontSize>
+  <FactionLens_Settings_FontSize_Tip>Choose the size of world-map labels. RimWorld's global UI scale applies automatically; larger fonts use more map space and may cause more crowded labels to be hidden.</FactionLens_Settings_FontSize_Tip>
+  <FactionLens_Settings_FontSize_Tiny>Tiny</FactionLens_Settings_FontSize_Tiny>
+  <FactionLens_Settings_FontSize_Small>Small</FactionLens_Settings_FontSize_Small>
+  <FactionLens_Settings_FontSize_Medium>Medium</FactionLens_Settings_FontSize_Medium>
   <FactionLens_Settings_Opacity>Label opacity</FactionLens_Settings_Opacity>
   <FactionLens_Settings_Opacity_Tip>How strongly labels sit on top of the map. Lower values let the terrain read through, which helps when a region has many settlements packed together. Applies to the nameplate and its text together, so a label never loses its own contrast.</FactionLens_Settings_Opacity_Tip>
   <FactionLens_Settings_Rounded>Rounded nameplate corners</FactionLens_Settings_Rounded>
@@ -30,7 +35,7 @@
   <FactionLens_Settings_Colorblind>Apply colorblind preset</FactionLens_Settings_Colorblind>
   <FactionLens_Settings_Colorblind_Tip>Use an Okabe-Ito-derived palette with distinct luminance and hue.</FactionLens_Settings_Colorblind_Tip>
   <FactionLens_Settings_Reset>Reset all defaults</FactionLens_Settings_Reset>
-  <FactionLens_Settings_Reset_Tip>Restores every Faction Lens setting, including all six relationship colours, to its default.</FactionLens_Settings_Reset_Tip>
+  <FactionLens_Settings_Reset_Tip>Restores every Faction Lens setting, including label font size and all six relationship colours, to its default.</FactionLens_Settings_Reset_Tip>
   <FactionLens_Settings_Color_Tip>Changes preview here immediately and apply to an open world map without reloading.</FactionLens_Settings_Color_Tip>
   <FactionLens_Category_Hostile>Hostile</FactionLens_Category_Hostile>
   <FactionLens_Category_Neutral>Neutral</FactionLens_Category_Neutral>

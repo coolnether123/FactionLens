@@ -19,6 +19,8 @@ namespace FactionLens.Presentation
             new BoundedLruCache<string, Vector2>(
                 64 * 1024,
                 StringComparer.Ordinal);
+        private static bool hasCachedLabelFont;
+        private static GameFont cachedLabelFont;
         private static readonly RelationshipCategory[] LegendCategories =
         {
             RelationshipCategory.Player,
@@ -113,7 +115,13 @@ namespace FactionLens.Presentation
             Color previousColor = GUI.color;
             try
             {
-                Text.Font = GameFont.Tiny;
+                Text.Font = LabelDrawer.FontFor(settings);
+                if (!hasCachedLabelFont || cachedLabelFont != Text.Font)
+                {
+                    LabelSizes.Reset();
+                    cachedLabelFont = Text.Font;
+                    hasCachedLabelFont = true;
+                }
                 Text.Anchor = TextAnchor.MiddleCenter;
                 CollisionIndex.Clear();
                 CollisionIndex.MaxVerticalShifts =
@@ -609,7 +617,7 @@ namespace FactionLens.Presentation
 
             if (!LabelSizes.TryGet(label, out Vector2 size))
             {
-                size = LabelDrawer.Measure(label);
+                size = LabelDrawer.Measure(label, settings);
                 LabelSizes.AddOrUpdate(
                     label,
                     size,
@@ -781,7 +789,8 @@ namespace FactionLens.Presentation
 
         private static void DrawLegend(FactionLensSettings settings)
         {
-            const float rowHeight = 20f;
+            float titleHeight = LegendTitleBlockHeight();
+            float rowHeight = LegendRowHeight();
             Rect panel = LegendPanelRect();
             Widgets.DrawBoxSolid(
                 panel,
@@ -796,13 +805,13 @@ namespace FactionLens.Presentation
                     panel.x + 8f,
                     panel.y + 3f,
                     panel.width - 16f,
-                    22f),
+                    titleHeight - 3f),
                 "FactionLens_Legend_Title".Translate());
 
             for (int index = 0; index < LegendCategories.Length; index++)
             {
                 RelationshipCategory category = LegendCategories[index];
-                float y = panel.y + 27f + index * rowHeight;
+                float y = panel.y + titleHeight + index * rowHeight;
                 Rect row = new Rect(
                     panel.x + 5f,
                     y,
@@ -815,7 +824,11 @@ namespace FactionLens.Presentation
                         "colors.header"),
                     new ContextualSettingsBindingOptions(priority: 10));
                 Widgets.DrawBoxSolid(
-                    new Rect(panel.x + 9f, y + 4f, 12f, 12f),
+                    new Rect(
+                        panel.x + 9f,
+                        y + (rowHeight - 12f) * 0.5f,
+                        12f,
+                        12f),
                     settings.ColorFor(category));
                 GUI.color = Color.white;
                 Widgets.Label(
@@ -832,14 +845,40 @@ namespace FactionLens.Presentation
 
         private static Rect LegendPanelRect()
         {
-            const float width = 154f;
-            const float rowHeight = 20f;
             const int categoryCount = 6;
+            float titleHeight = LegendTitleBlockHeight();
+            float rowHeight = LegendRowHeight();
             return new Rect(
                 12f,
                 72f,
-                width,
-                26f + categoryCount * rowHeight + 6f);
+                LegendPanelWidth(),
+                titleHeight + categoryCount * rowHeight + 6f);
+        }
+
+        private static float LegendTitleBlockHeight()
+        {
+            return Mathf.Max(27f, Mathf.Ceil(Text.LineHeight) + 7f);
+        }
+
+        private static float LegendRowHeight()
+        {
+            return Mathf.Max(20f, Mathf.Ceil(Text.LineHeight) + 2f);
+        }
+
+        private static float LegendPanelWidth()
+        {
+            float widestLabel = Text.CalcSize(
+                "FactionLens_Legend_Title".Translate()).x;
+            for (int index = 0; index < LegendCategories.Length; index++)
+            {
+                widestLabel = Mathf.Max(
+                    widestLabel,
+                    Text.CalcSize(
+                        FactionLensSettingsRegistry.CategoryLabel(
+                            LegendCategories[index])).x);
+            }
+
+            return Mathf.Max(154f, Mathf.Ceil(widestLabel) + 36f);
         }
 
         private static string ColorSettingId(

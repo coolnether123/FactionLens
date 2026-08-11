@@ -34,12 +34,43 @@ namespace FactionLens.Presentation
         private const float HorizontalPadding = 6f;
         private const float VerticalPadding = 2f;
 
-        internal static Vector2 Measure(string label)
+        internal static GameFont FontFor(FactionLensSettings settings)
         {
-            Vector2 textSize = Text.CalcSize(label);
-            return new Vector2(
-                Mathf.Ceil(textSize.x) + HorizontalPadding * 2f,
-                Mathf.Max(20f, Mathf.Ceil(textSize.y) + VerticalPadding * 2f));
+            if (settings == null)
+            {
+                return GameFont.Tiny;
+            }
+
+            switch (settings.LabelFontSize)
+            {
+                case FactionLensLabelFontSize.Small:
+                    return GameFont.Small;
+                case FactionLensLabelFontSize.Medium:
+                    return GameFont.Medium;
+                default:
+                    return GameFont.Tiny;
+            }
+        }
+
+        internal static Vector2 Measure(
+            string label,
+            FactionLensSettings settings)
+        {
+            GameFont previousFont = Text.Font;
+            try
+            {
+                Text.Font = FontFor(settings);
+                Vector2 textSize = Text.CalcSize(label);
+                return new Vector2(
+                    Mathf.Ceil(textSize.x) + HorizontalPadding * 2f,
+                    Mathf.Max(
+                        20f,
+                        Mathf.Ceil(textSize.y) + VerticalPadding * 2f));
+            }
+            finally
+            {
+                Text.Font = previousFont;
+            }
         }
 
         internal static void Draw(
@@ -49,47 +80,56 @@ namespace FactionLens.Presentation
             FactionLensSettings settings,
             bool hovered = false)
         {
+            GameFont previousFont = Text.Font;
             Color previousColor = GUI.color;
-
-            // One multiplication, applied before anything is drawn, so the
-            // player's opacity setting scales the plate, the outline and the
-            // text together and the label keeps its own internal contrast at
-            // every setting. color.a already carries the fade transition.
-            color.a *= Mathf.Clamp01(settings.LabelOpacity);
-
-            if (settings.ShowBackground)
-            {
-                Color background = BackgroundColor;
-                background.a *= color.a;
-                DrawNameplate(rect, background, settings.RoundedNameplates);
-            }
-            if (hovered)
-            {
-                Widgets.DrawHighlight(rect);
-            }
-
-            // Centre inside the whole plate rather than inside a contracted
-            // rect. Any rounding left over from Measure is then split evenly
-            // between the two sides instead of piling up on the right and the
-            // bottom, which is what made the margins look lopsided.
             TextAnchor previousAnchor = Text.Anchor;
-            Text.Anchor = TextAnchor.MiddleCenter;
-
-            if (settings.ShowOutline)
+            try
             {
-                Color outline = OutlineColor;
-                outline.a *= color.a;
-                GUI.color = outline;
-                Widgets.Label(Offset(rect, -1f, 0f), label);
-                Widgets.Label(Offset(rect, 1f, 0f), label);
-                Widgets.Label(Offset(rect, 0f, -1f), label);
-                Widgets.Label(Offset(rect, 0f, 1f), label);
-            }
+                Text.Font = FontFor(settings);
 
-            GUI.color = color;
-            Widgets.Label(rect, label);
-            GUI.color = previousColor;
-            Text.Anchor = previousAnchor;
+                // One multiplication, applied before anything is drawn, so the
+                // player's opacity setting scales the plate, the outline and the
+                // text together and the label keeps its own internal contrast at
+                // every setting. color.a already carries the fade transition.
+                color.a *= Mathf.Clamp01(settings.LabelOpacity);
+
+                if (settings.ShowBackground)
+                {
+                    Color background = BackgroundColor;
+                    background.a *= color.a;
+                    DrawNameplate(rect, background, settings.RoundedNameplates);
+                }
+                if (hovered)
+                {
+                    Widgets.DrawHighlight(rect);
+                }
+
+                // Centre inside the whole plate rather than inside a contracted
+                // rect. Any rounding left over from Measure is then split evenly
+                // between the two sides instead of piling up on the right and the
+                // bottom, which is what made the margins look lopsided.
+                Text.Anchor = TextAnchor.MiddleCenter;
+
+                if (settings.ShowOutline)
+                {
+                    Color outline = OutlineColor;
+                    outline.a *= color.a;
+                    GUI.color = outline;
+                    Widgets.Label(Offset(rect, -1f, 0f), label);
+                    Widgets.Label(Offset(rect, 1f, 0f), label);
+                    Widgets.Label(Offset(rect, 0f, -1f), label);
+                    Widgets.Label(Offset(rect, 0f, 1f), label);
+                }
+
+                GUI.color = color;
+                Widgets.Label(rect, label);
+            }
+            finally
+            {
+                GUI.color = previousColor;
+                Text.Anchor = previousAnchor;
+                Text.Font = previousFont;
+            }
         }
 
         /// <summary>

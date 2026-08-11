@@ -8,5 +8,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Faction Lens")]
 [assembly: AssemblyCopyright("Copyright © 2026 CoolNether123")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]

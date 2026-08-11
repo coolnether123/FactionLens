@@ -2,6 +2,7 @@
 <ModMetaData>
   <name>Faction Lens</name>
   <author>CoolNether123</author>
+  <modVersion>1.0.1</modVersion>
   <packageId>CoolNether123.FactionLens</packageId>
   <supportedVersions>
     <li>0.13</li>
@@ -41,6 +42,7 @@
 
 - Separate colors for hostile, neutral, allied, your own, abandoned, and unknown
 - Colorblind preset
+- Selectable label font size on modern RimWorld versions, following RimWorld's global UI scale
 - Click a name to select that object
 - Opacity slider and an optional legend
 - Hover-only mode that keeps the map quiet until you point at something

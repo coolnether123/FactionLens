@@ -5,6 +5,13 @@ using Verse;
 
 namespace FactionLens.Settings
 {
+    public enum FactionLensLabelFontSize
+    {
+        Tiny,
+        Small,
+        Medium
+    }
+
     public sealed class FactionLensSettings : ModSettings
     {
         public bool FeatureEnabled = true;
@@ -14,6 +21,8 @@ namespace FactionLens.Settings
         public bool ShowLegend;
         public bool ShowBackground = true;
         public bool RoundedNameplates = true;
+        public FactionLensLabelFontSize LabelFontSize =
+            FactionLensLabelFontSize.Tiny;
         public float LabelOpacity = 0.8f;
         public bool ShowOutline;
         public bool ShowDisplacedLabels;
@@ -65,6 +74,7 @@ namespace FactionLens.Settings
             ShowLegend = false;
             ShowBackground = true;
             RoundedNameplates = true;
+            LabelFontSize = FactionLensLabelFontSize.Tiny;
             LabelOpacity = 0.8f;
             ShowOutline = false;
             ShowDisplacedLabels = false;

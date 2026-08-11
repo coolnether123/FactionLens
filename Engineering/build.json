@@ -5,13 +5,15 @@
   "purpose": "Compile",
   "rimWorldVersion": "1.6",
   "project": "Source/Mod.csproj",
-  "configuration": "Release",
+  "configuration": "1.6",
   "assemblyName": "FactionLens",
   "packageId": "CoolNether123.FactionLens",
   "releaseIncludePaths": [
     "About",
     "1.6/Assemblies/FactionLens.dll",
-    "Languages"
+    "Languages",
+    "LICENSE",
+    "README.md"
   ],
   "dependencies": [
     "harmony",

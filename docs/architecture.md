@@ -39,6 +39,18 @@ finished its own input handling, so vanilla cannot overwrite the label click.
 Drawing still occurs only during postfix repaint and click processing never
 issues draw calls.
 
+Label font size is a Faction Lens presentation preference backed by RimWorld's
+`GameFont` values. The selected font is used consistently for measurement,
+nameplate drawing, the settings preview, and the legend. RimWorld's global UI
+scale remains the only coordinate transform: Faction Lens works in the same
+logical UI space as vanilla, so it does not multiply label geometry by
+`Prefs.UIScale` a second time. Larger fonts naturally produce larger collision
+and click rectangles and can therefore reduce the number of labels that fit in
+a crowded view.
+The pre-0.17 compatibility renderer remains Tiny because those builds do not
+have the Spine-backed settings page; the modern renderer is the owner of this
+preference.
+
 ## Immediate updates and performance
 
 Ownership and `Faction.PlayerRelationKind` are read directly during each
@@ -58,7 +70,9 @@ sorting use Spine and allocation outside the render hot path.
 
 Measured label sizes use Spine's bounded LRU cache instead of an unbounded or
 magic-threshold dictionary clear. The cache has a 64 KiB budget and therefore
-retains useful repeated names without periodic full-cache churn.
+retains useful repeated names without periodic full-cache churn. It is reset
+when the effective `GameFont` changes so a saved Tiny measurement cannot be
+reused for Small or Medium text.
 
 ## Hidden-information rule
 
@@ -93,6 +107,9 @@ The implementation intentionally retains these private one-caller helpers:
   selection, and panel rendering from GUI-state lifetime management.
 - `FactionLensSettingsUi.DrawPreview` separates the reusable label preview
   from control layout.
+- `FactionLensSettingsRegistry.FontSizeLabel` keeps enum-value translation
+  local to the setting registration, and `WorldLabelOverlay.LegendPanelWidth`
+  keeps legend text measurement separate from panel placement.
 - `WorldLabelPatch.AfterExpandableWorldObjectsOnGui` is a Harmony callback,
   so its single caller is external by design.
 - `ScreenBounds.Overlaps` and `ShiftDown`, plus

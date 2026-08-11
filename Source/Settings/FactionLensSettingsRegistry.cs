@@ -31,6 +31,15 @@ namespace FactionLens.Settings
                     "Enable labels", "FactionLens_Settings_Enabled", tooltipKey: "FactionLens_Settings_Enabled_Tip", scribeKey: "featureEnabled"),
                 SettingDefinitions.Toggle("visuals.background", nameof(FactionLensSettings.ShowBackground),
                     "Show label backgrounds", "FactionLens_Settings_Background", tooltipKey: "FactionLens_Settings_Background_Tip", scribeKey: "showBackground"),
+                SettingDefinitions.Enum(
+                    "visuals.fontSize",
+                    nameof(FactionLensSettings.LabelFontSize),
+                    typeof(FactionLensLabelFontSize),
+                    "Label font size",
+                    "FactionLens_Settings_FontSize",
+                    tooltipKey: "FactionLens_Settings_FontSize_Tip",
+                    scribeKey: "labelFontSize",
+                    labelProvider: FontSizeLabel),
                 // Floor of 0.35 rather than 0: a label faded to nothing is
                 // indistinguishable from the feature being broken, and the
                 // enable toggle already covers "off".
@@ -132,6 +141,17 @@ namespace FactionLens.Settings
         internal static string CategoryLabel(RelationshipCategory category)
         {
             return ("FactionLens_Category_" + category).Translate();
+        }
+
+        private static string FontSizeLabel(object value)
+        {
+            if (!(value is FactionLensLabelFontSize))
+            {
+                return value?.ToString() ?? string.Empty;
+            }
+
+            return ("FactionLens_Settings_FontSize_" +
+                (FactionLensLabelFontSize)value).Translate();
         }
     }
 }

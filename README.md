@@ -13,6 +13,7 @@ colors that are resolved from current game state every repaint.
 - An Okabe-Ito-derived colorblind preset.
 - Independent switches for settlements, sites, and other world objects.
 - Optional compact legend, dark nameplate background, and text outline.
+- Selectable label font size that follows RimWorld's global UI scaling.
 - An opacity slider so labels can sit lightly over the terrain.
 - A quiet mode that shows a name only for the world object you point at.
 - A pinned colour preview that stays visible while you scroll the settings.
@@ -76,7 +77,7 @@ dotnet run --project Tests\Mod.Tests.csproj -c Release
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command `
   "& (Join-Path `$env:RIMWORLD_TOOLING_ROOT 'tools\Invoke-RimWorldBuild.ps1') `
-  -Project '$PWD\Source\Mod.csproj' -Configuration Release -Version 1.6 `
+  -Project '$PWD\Source\Mod.csproj' -Configuration 1.6 -Version 1.6 `
   -OutputRoot '$PWD\Engineering\artifacts\build' -Engine DotNet `
   -Dependency @('harmony','spine')"
 ```
