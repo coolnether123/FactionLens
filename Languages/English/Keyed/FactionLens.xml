@@ -6,7 +6,7 @@
   <FactionLens_Settings_Background>Readable dark background</FactionLens_Settings_Background>
   <FactionLens_Settings_Background_Tip>Place a compact translucent nameplate behind each label.</FactionLens_Settings_Background_Tip>
   <FactionLens_Settings_FontSize>Label font size</FactionLens_Settings_FontSize>
-  <FactionLens_Settings_FontSize_Tip>Choose the size of world-map labels. RimWorld's global UI scale applies automatically; larger fonts use more map space and may cause more crowded labels to be hidden.</FactionLens_Settings_FontSize_Tip>
+  <FactionLens_Settings_FontSize_Tip>Follows RimWorld's UI scale. Larger labels may hide sooner when the map is crowded.</FactionLens_Settings_FontSize_Tip>
   <FactionLens_Settings_FontSize_Tiny>Tiny</FactionLens_Settings_FontSize_Tiny>
   <FactionLens_Settings_FontSize_Small>Small</FactionLens_Settings_FontSize_Small>
   <FactionLens_Settings_FontSize_Medium>Medium</FactionLens_Settings_FontSize_Medium>

@@ -26,7 +26,9 @@ namespace FactionLens.Settings
         {
             return new[]
             {
-                SettingDefinitions.Header("visuals.header", "Visuals", "FactionLens_Settings_Visuals"),
+                Accent(
+                    SettingDefinitions.Header("visuals.header", "Visuals", "FactionLens_Settings_Visuals"),
+                    new Color(0.55f, 0.75f, 0.9f)),
                 SettingDefinitions.Toggle("visuals.enabled", nameof(FactionLensSettings.FeatureEnabled),
                     "Enable labels", "FactionLens_Settings_Enabled", tooltipKey: "FactionLens_Settings_Enabled_Tip", scribeKey: "featureEnabled"),
                 SettingDefinitions.Toggle("visuals.background", nameof(FactionLensSettings.ShowBackground),
@@ -68,7 +70,9 @@ namespace FactionLens.Settings
                 SettingDefinitions.Toggle("visuals.legend", nameof(FactionLensSettings.ShowLegend),
                     "Show legend", "FactionLens_Settings_Legend", tooltipKey: "FactionLens_Settings_Legend_Tip", scribeKey: "showLegend"),
 
-                SettingDefinitions.Header("objects.header", "Object types", "FactionLens_Settings_ObjectTypes"),
+                Accent(
+                    SettingDefinitions.Header("objects.header", "Object types", "FactionLens_Settings_ObjectTypes"),
+                    new Color(0.5f, 0.8f, 0.5f)),
                 SettingDefinitions.Toggle("objects.settlements", nameof(FactionLensSettings.ShowSettlements),
                     "Show settlements", "FactionLens_Settings_Settlements", tooltipKey: "FactionLens_Settings_Settlements_Tip", scribeKey: "showSettlements"),
                 SettingDefinitions.Toggle("objects.sites", nameof(FactionLensSettings.ShowSites),
@@ -76,7 +80,9 @@ namespace FactionLens.Settings
                 SettingDefinitions.Toggle("objects.other", nameof(FactionLensSettings.ShowOtherFactionObjects),
                     "Show other faction objects", "FactionLens_Settings_Other", tooltipKey: "FactionLens_Settings_Other_Tip", simple: false, scribeKey: "showOtherFactionObjects"),
 
-                SettingDefinitions.Header("colors.header", "Relationship colors", "FactionLens_Settings_Colors"),
+                Accent(
+                    SettingDefinitions.Header("colors.header", "Relationship colors", "FactionLens_Settings_Colors"),
+                    new Color(0.9f, 0.7f, 0.4f)),
                 ColorSetting("colors.hostile", nameof(FactionLensSettings.HostileColor), "hostileColor", RelationshipCategory.Hostile),
                 ColorSetting("colors.neutral", nameof(FactionLensSettings.NeutralColor), "neutralColor", RelationshipCategory.Neutral),
                 ColorSetting("colors.allied", nameof(FactionLensSettings.AlliedColor), "alliedColor", RelationshipCategory.Allied),
@@ -110,6 +116,12 @@ namespace FactionLens.Settings
                 "FactionLens_Category_" + category,
                 "FactionLens_Settings_Color_Tip",
                 scribeKey);
+
+        private static SettingDefinition Accent(SettingDefinition definition, Color color)
+        {
+            definition.HeaderColor = color;
+            return definition;
+        }
 
         private static bool DrawPreview(
             Rect rect,
