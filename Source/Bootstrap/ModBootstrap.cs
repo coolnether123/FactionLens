@@ -12,10 +12,11 @@ namespace FactionLens.Bootstrap
             : base(
                 content,
                 "CoolNether123.FactionLens",
-                new SemanticVersion(1, 0, 0),
+                new SemanticVersion(1, 1, 0),
                 FactionLensSettingsRegistry.Definitions,
                 SpineCapability.HarmonyPatching |
-                SpineCapability.BoundedCaches,
+                SpineCapability.BoundedCaches |
+                SpineCapability.SettingsSchema,
                 new ModSettingsPageOptions { RowHeight = 38f })
         {
             WorldLabelPatch.Install();

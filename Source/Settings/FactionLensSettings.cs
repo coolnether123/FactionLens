@@ -1,5 +1,4 @@
 using FactionLens.Domain;
-using Spine.Api;
 using UnityEngine;
 using Verse;
 
@@ -90,9 +89,7 @@ namespace FactionLens.Settings
 
         public override void ExposeData()
         {
-            SpineApi.Settings.Scribe(
-                this,
-                FactionLensSettingsRegistry.Definitions);
+            FactionLensSettingsRegistry.Schema.Scribe(this);
             base.ExposeData();
         }
 
