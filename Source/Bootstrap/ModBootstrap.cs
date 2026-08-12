@@ -13,7 +13,7 @@ namespace FactionLens.Bootstrap
                 content,
                 "CoolNether123.FactionLens",
                 new SemanticVersion(1, 1, 0),
-                FactionLensSettingsRegistry.Definitions,
+                FactionLensSettingsRegistry.Schema.Definitions,
                 SpineCapability.HarmonyPatching |
                 SpineCapability.BoundedCaches |
                 SpineCapability.SettingsSchema,
