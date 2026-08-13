@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Faction Lens Legacy Contract Fixture</name>
+  <author>CoolNether123</author>
+  <packageId>CoolNether123.FactionLens.LegacyContractFixture</packageId>
+  <supportedVersions>
+    <li>1.0</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>CoolNether123.FactionLens</packageId>
+      <displayName>Faction Lens</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>CoolNether123.FactionLens</li>
+  </loadAfter>
+  <description>Developer-only old-CLR settings, contextual-label, save, and Harmony contract fixture.</description>
+</ModMetaData>

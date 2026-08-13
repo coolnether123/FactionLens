@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>FactionLens.LegacyContractFixture</AssemblyName>
+    <RootNamespace>FactionLens.LegacyContractFixture</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\1.0\Assemblies\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.0'">
+    <DefineConstants>TRACE;RWT_LEGACY_BCL</DefineConstants>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <NoStdLib>true</NoStdLib>
+    <FrameworkPathOverride>$(RimWorldManagedDir)</FrameworkPathOverride>
+    <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FactionLensAssembly Condition="'$(FactionLensAssembly)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\1.0\Assemblies\FactionLens.dll'))</FactionLensAssembly>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == '1.0'">
+    <Reference Include="mscorlib" HintPath="$(RimWorldManagedDir)\mscorlib.dll" Private="false" />
+    <Reference Include="System" HintPath="$(RimWorldManagedDir)\System.dll" Private="false" />
+    <Reference Include="System.Core" HintPath="$(RimWorldManagedDir)\System.Core.dll" Private="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony" Condition="'$(RwtDependencyHarmony)' != ''">
+      <HintPath>$(RwtDependencyHarmony)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="FactionLens">
+      <HintPath>$(FactionLensAssembly)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Spine" Condition="'$(RwtDependencySpine)' != ''">
+      <HintPath>$(RwtDependencySpine)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireFixtureDependencies" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(FactionLensAssembly)')" Text="FactionLensAssembly is required." />
+    <Error Condition="'$(RwtDependencySpine)' == '' or !Exists('$(RwtDependencySpine)')" Text="RwtDependencySpine is required." />
+    <Error Condition="'$(RwtDependencyHarmony)' == '' or !Exists('$(RwtDependencyHarmony)')" Text="RwtDependencyHarmony is required." />
+  </Target>
+</Project>

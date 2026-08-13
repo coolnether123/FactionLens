@@ -89,7 +89,33 @@ namespace FactionLens.Settings
 
         public override void ExposeData()
         {
+#if RWT_LEGACY_BCL
+            // RimWorld 1.0's deep settings serializer does not reliably invoke
+            // the shared definition-driven facade for this consumer. Keep the
+            // schema/UI ownership in Spine, but use the authoritative 1.0
+            // primitive write path for the persisted fields.
+            Scribe_Values.Look(ref FeatureEnabled, "featureEnabled", true);
+            Scribe_Values.Look(ref ShowSettlements, "showSettlements", true);
+            Scribe_Values.Look(ref ShowSites, "showSites", true);
+            Scribe_Values.Look(ref ShowOtherFactionObjects, "showOtherFactionObjects", true);
+            Scribe_Values.Look(ref ShowLegend, "showLegend", false);
+            Scribe_Values.Look(ref ShowBackground, "showBackground", true);
+            Scribe_Values.Look(ref RoundedNameplates, "roundedNameplates", true);
+            Scribe_Values.Look(ref LabelFontSize, "labelFontSize", FactionLensLabelFontSize.Tiny);
+            Scribe_Values.Look(ref LabelOpacity, "labelOpacity", 0.8f);
+            Scribe_Values.Look(ref ShowOutline, "showOutline", false);
+            Scribe_Values.Look(ref ShowDisplacedLabels, "showDisplacedLabels", false);
+            Scribe_Values.Look(ref PrioritizePlayerLabels, "prioritizePlayerLabels", true);
+            Scribe_Values.Look(ref LabelsOnHoverOnly, "labelsOnHoverOnly", false);
+            Scribe_Values.Look(ref HostileColor, "hostileColor", FactionLensPalette.Default.Hostile);
+            Scribe_Values.Look(ref NeutralColor, "neutralColor", FactionLensPalette.Default.Neutral);
+            Scribe_Values.Look(ref AlliedColor, "alliedColor", FactionLensPalette.Default.Allied);
+            Scribe_Values.Look(ref PlayerColor, "playerColor", FactionLensPalette.Default.Player);
+            Scribe_Values.Look(ref FactionlessColor, "factionlessColor", FactionLensPalette.Default.Factionless);
+            Scribe_Values.Look(ref UnknownColor, "unknownColor", FactionLensPalette.Default.Unknown);
+#else
             FactionLensSettingsRegistry.Schema.Scribe(this);
+#endif
             base.ExposeData();
         }
 
