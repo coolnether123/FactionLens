@@ -23,8 +23,8 @@ if (-not (Test-Path -LiteralPath $spineAssembly -PathType Leaf))
     throw "The matching SpineLib payload must be built first: $spineAssembly"
 }
 
-Import-Module (Join-Path $toolingRoot 'modules\RimWorld.Tooling.Depot\RimWorld.Tooling.Depot.psd1') -Force
 Import-Module (Join-Path $toolingRoot 'modules\RimWorld.Tooling.Build\RimWorld.Tooling.Build.psd1') -Force
+Import-Module (Join-Path $toolingRoot 'modules\RimWorld.Tooling.Depot\RimWorld.Tooling.Depot.psd1') -Force
 
 $environment = Resolve-RwtEnvironment `
     -Version $Configuration `
