@@ -4,6 +4,7 @@ using Verse;
 
 namespace FactionLens.Presentation
 {
+    [StaticConstructorOnStartup]
     internal static class LabelDrawer
     {
         private static readonly Color BackgroundColor =
