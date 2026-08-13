@@ -26,9 +26,18 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == '1.0'">
+    <DefineConstants>TRACE;RWT_HAS_FACTION_RELATION_KIND;RWT_LEGACY_BCL</DefineConstants>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <NoStdLib>true</NoStdLib>
+    <FrameworkPathOverride>$(RimWorldManagedDir)</FrameworkPathOverride>
     <RwtUseUnityImGui>false</RwtUseUnityImGui>
     <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>
   </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == '1.0'">
+    <Reference Include="mscorlib" HintPath="$(RimWorldManagedDir)\mscorlib.dll" Private="false" />
+    <Reference Include="System" HintPath="$(RimWorldManagedDir)\System.dll" Private="false" />
+    <Reference Include="System.Core" HintPath="$(RimWorldManagedDir)\System.Core.dll" Private="false" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == '0.16' Or '$(Configuration)' == '0.15' Or '$(Configuration)' == '0.14' Or '$(Configuration)' == '0.13' Or '$(Configuration)' == 'Alpha4'">
     <RwtUseUnityImGui>false</RwtUseUnityImGui>
     <RwtUseLegacyUnityAssembly>true</RwtUseLegacyUnityAssembly>

@@ -4,6 +4,7 @@ using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using FactionLens.Compatibility;
 
 namespace FactionLens.Api
 {
@@ -11,7 +12,7 @@ namespace FactionLens.Api
     /// The result returned by a compatibility ownership resolver.
     /// Unknown is deliberately distinct from a disclosed factionless object.
     /// </summary>
-    public readonly struct OwnershipResolution
+    public struct OwnershipResolution
     {
         private OwnershipResolution(
             OwnershipResolutionKind kind,
@@ -77,7 +78,7 @@ namespace FactionLens.Api
             OwnershipResolver resolver,
             int priority = 0)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (LegacyBcl.IsNullOrWhiteSpace(id))
             {
                 throw new ArgumentException(
                     "A stable resolver ID is required.",
@@ -97,7 +98,7 @@ namespace FactionLens.Api
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            lock (Sync)
+            using (LegacyBcl.Enter(Sync))
             {
                 if (registrations.Any(item =>
                     string.Equals(
@@ -129,12 +130,12 @@ namespace FactionLens.Api
 
         public static bool UnregisterOwnershipResolver(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (LegacyBcl.IsNullOrWhiteSpace(id))
             {
                 return false;
             }
 
-            lock (Sync)
+            using (LegacyBcl.Enter(Sync))
             {
                 int index = Array.FindIndex(
                     registrations,

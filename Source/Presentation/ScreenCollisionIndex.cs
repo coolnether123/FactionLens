@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FactionLens.Presentation
 {
-    internal readonly struct ScreenBounds
+    internal struct ScreenBounds
     {
         internal ScreenBounds(
             float x,

@@ -901,7 +901,7 @@ namespace FactionLens.Presentation
             }
         }
 
-        private readonly struct PendingLabel
+        private struct PendingLabel
         {
             internal PendingLabel(
                 WorldObject worldObject,
@@ -930,7 +930,7 @@ namespace FactionLens.Presentation
             internal Rect NaturalLabelRect { get; }
         }
 
-        private readonly struct PlacedLabel
+        private struct PlacedLabel
         {
             internal PlacedLabel(
                 WorldObject worldObject,

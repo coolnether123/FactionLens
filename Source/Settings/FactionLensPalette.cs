@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace FactionLens.Settings
 {
-    internal readonly struct FactionLensPalette
+    internal struct FactionLensPalette
     {
         internal FactionLensPalette(
             Color hostile,
