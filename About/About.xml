@@ -38,7 +38,7 @@
     <li>brrainz.harmony</li>
     <li>CoolNether123.Spine</li>
   </loadAfter>
-  <description>Relationship-colored names under settlements, sites, and other faction objects on the world map, so you can tell friend from foe at a glance.
+  <description>Adds names under settlements, sites, and other faction objects on the world map. Each name is colored by its relationship to you.
 
 - Separate colors for hostile, neutral, allied, your own, abandoned, and unknown
 - Colorblind preset

@@ -11,17 +11,17 @@
   <FactionLens_Settings_FontSize_Small>Small</FactionLens_Settings_FontSize_Small>
   <FactionLens_Settings_FontSize_Medium>Medium</FactionLens_Settings_FontSize_Medium>
   <FactionLens_Settings_Opacity>Label opacity</FactionLens_Settings_Opacity>
-  <FactionLens_Settings_Opacity_Tip>How strongly labels sit on top of the map. Lower values let the terrain read through, which helps when a region has many settlements packed together. Applies to the nameplate and its text together, so a label never loses its own contrast.</FactionLens_Settings_Opacity_Tip>
+  <FactionLens_Settings_Opacity_Tip>Controls the opacity of labels over the map. Lower values reveal more terrain in crowded regions. The setting applies to the nameplate and text together to preserve their contrast.</FactionLens_Settings_Opacity_Tip>
   <FactionLens_Settings_Rounded>Rounded nameplate corners</FactionLens_Settings_Rounded>
-  <FactionLens_Settings_Rounded_Tip>Softens the four corners of the dark nameplate instead of drawing a hard rectangle. Purely cosmetic; it changes nothing about which names are shown or where they sit.</FactionLens_Settings_Rounded_Tip>
+  <FactionLens_Settings_Rounded_Tip>Rounds the four corners of the dark nameplate. This only changes its appearance, not which names appear or where they are placed.</FactionLens_Settings_Rounded_Tip>
   <FactionLens_Settings_Outline>Dark text outline</FactionLens_Settings_Outline>
   <FactionLens_Settings_Outline_Tip>Outline label text for contrast over bright terrain.</FactionLens_Settings_Outline_Tip>
   <FactionLens_Settings_Displaced>Keep labels that cannot fit under their icon</FactionLens_Settings_Displaced>
-  <FactionLens_Settings_Displaced_Tip>When two names collide, Faction Lens can move one further down and draw a connector line back to the icon it belongs to. Off by default: a name that cannot sit directly beneath its own icon is hidden instead, which keeps a crowded world map readable.</FactionLens_Settings_Displaced_Tip>
+  <FactionLens_Settings_Displaced_Tip>When two names collide, Faction Lens can move one farther down and draw a connector line to its icon. This is off by default. Without displacement, the mod hides any name that cannot fit directly beneath its icon.</FactionLens_Settings_Displaced_Tip>
   <FactionLens_Settings_HoverOnly>Only show a name when pointed at</FactionLens_Settings_HoverOnly>
-  <FactionLens_Settings_HoverOnly_Tip>Keeps the world map exactly as vanilla draws it until you point at something, then shows that one name in its relationship colour. Use this if the labelled map feels busy but you still want to tell friend from foe.</FactionLens_Settings_HoverOnly_Tip>
+  <FactionLens_Settings_HoverOnly_Tip>Hides every added name until you point at a world object, then shows only that object's name in its relationship colour.</FactionLens_Settings_HoverOnly_Tip>
   <FactionLens_Settings_PlayerPriority>Give your own colony names first claim</FactionLens_Settings_PlayerPriority>
-  <FactionLens_Settings_PlayerPriority_Tip>When names compete for the same space, your own colonies are placed first so theirs are never the ones dropped. Most useful with several colonies, when the name is all that tells them apart. Turn off to let every name compete equally.</FactionLens_Settings_PlayerPriority_Tip>
+  <FactionLens_Settings_PlayerPriority_Tip>When names compete for space, place your colonies first so their names remain visible. Turn this off to give every name equal priority.</FactionLens_Settings_PlayerPriority_Tip>
   <FactionLens_Settings_Legend>Show compact world-map legend</FactionLens_Settings_Legend>
   <FactionLens_Settings_Legend_Tip>Draws a small key on the world map showing which colour corresponds to which relationship.</FactionLens_Settings_Legend_Tip>
   <FactionLens_Settings_ObjectTypes>World-object types</FactionLens_Settings_ObjectTypes>
@@ -29,14 +29,14 @@
   <FactionLens_Settings_Sites>Sites and quest locations</FactionLens_Settings_Sites>
   <FactionLens_Settings_Other>Other faction-owned world objects</FactionLens_Settings_Other>
   <FactionLens_Settings_Other_Tip>Includes compatible modded world objects whose ownership is meaningful.</FactionLens_Settings_Other_Tip>
-  <FactionLens_Settings_Settlements_Tip>Label permanent faction bases: the settlements you can trade with, caravan to, or be raided from.</FactionLens_Settings_Settlements_Tip>
+  <FactionLens_Settings_Settlements_Tip>Label permanent faction bases that you can trade with, visit by caravan, or be raided from.</FactionLens_Settings_Settlements_Tip>
   <FactionLens_Settings_Sites_Tip>Label temporary world locations such as quest sites, which disappear once they are resolved or expire.</FactionLens_Settings_Sites_Tip>
   <FactionLens_Settings_Colors>Relationship colors</FactionLens_Settings_Colors>
   <FactionLens_Settings_Colorblind>Apply colorblind preset</FactionLens_Settings_Colorblind>
   <FactionLens_Settings_Colorblind_Tip>Use an Okabe-Ito-derived palette with distinct luminance and hue.</FactionLens_Settings_Colorblind_Tip>
   <FactionLens_Settings_Reset>Reset all defaults</FactionLens_Settings_Reset>
   <FactionLens_Settings_Reset_Tip>Restores every Faction Lens setting, including label font size and all six relationship colours, to its default.</FactionLens_Settings_Reset_Tip>
-  <FactionLens_Settings_Color_Tip>Changes preview here immediately and apply to an open world map without reloading.</FactionLens_Settings_Color_Tip>
+  <FactionLens_Settings_Color_Tip>Updates the preview immediately and applies to an open world map without reloading.</FactionLens_Settings_Color_Tip>
   <FactionLens_Category_Hostile>Hostile</FactionLens_Category_Hostile>
   <FactionLens_Category_Neutral>Neutral</FactionLens_Category_Neutral>
   <FactionLens_Category_Allied>Allied</FactionLens_Category_Allied>

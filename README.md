@@ -1,9 +1,9 @@
 # Faction Lens
 
-Faction Lens adds relationship-colored names below applicable world-map
-objects in RimWorld 1.6. Hostile, neutral, allied, player-owned,
-abandoned/factionless, and unknown locations use independently configurable
-colors that are resolved from current game state every repaint.
+Faction Lens adds relationship-colored names below world-map objects in
+RimWorld 1.6. Hostile, neutral, allied, player-owned, abandoned, and unknown
+locations each have a configurable color. The colors update immediately when
+ownership or relationships change.
 
 ## Player features
 
@@ -15,7 +15,7 @@ colors that are resolved from current game state every repaint.
 - Optional compact legend, dark nameplate background, and text outline.
 - Selectable label font size that follows RimWorld's global UI scaling.
 - An opacity slider so labels can sit lightly over the terrain.
-- A quiet mode that shows a name only for the world object you point at.
+- A hover-only mode that shows a name only for the world object you point at.
 - A pinned colour preview that stays visible while you scroll the settings.
 - No game-save component and no diplomacy changes.
 
@@ -34,25 +34,23 @@ displaced labels to get the older behaviour back, where a crowded name moves
 down and a subtle white connector joins it to its icon; connectors draw behind
 nameplates so they never cross a neighbouring name.
 
-Placement is ordered so the map stays steady. Whatever you are pointing at keeps
-its place, your own colonies claim theirs next, and a name that was already
-showing holds its slot before any newcomer competes for it — so panning and
-zooming does not make names flicker in and out.
+Placement order keeps the map steady. The object under the pointer keeps its
+place first, followed by your colonies and labels that were already visible.
+New labels take the remaining space, which reduces flicker while panning and
+zooming.
 
-In quiet mode no names are drawn at all until you point at an icon, and then
-only that one appears. It fades out as the pointer moves away, and holds at full
-strength while the pointer rests on the name itself.
+In hover-only mode, no names appear until you point at an icon. That object's name
+fades in, remains fully visible while the pointer rests on the name, and fades
+out when the pointer moves away.
 
-Label opacity defaults to 80% and scales the nameplate, its outline, and the
-text together, so a label keeps its own internal contrast at every setting
-rather than the text washing out over a still-solid plate. The floor is 35%
-rather than zero, because a label faded to nothing is indistinguishable from
-the mod being broken, and the enable switch already covers off.
+Label opacity defaults to 80% and applies to the nameplate, outline, and text
+together. This preserves the contrast between them at every setting. The
+slider stops at 35%; use the enable switch to hide labels completely.
 
-Advanced holds the settings most players never need: rounded nameplate corners
-(on by default), displaced labels, player-colony placement priority, and the
-reset button. The outline switch hides itself whenever the nameplate is on,
-since an outline behind a solid plate changes nothing you can see.
+The Advanced section contains rounded nameplate corners, displaced labels,
+player-colony placement priority, and the reset button. Rounded corners are on
+by default. The outline switch is hidden while nameplates are enabled because
+the solid plate covers the outline.
 
 ## Requirements
 
